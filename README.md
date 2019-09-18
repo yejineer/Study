@@ -5,14 +5,13 @@ Git을 사용해 볼 목적으로 학교에서 배운 것, 과제 풀이, 프로
 
 알고리즘
 ==
-&#128221; Lecture note 
+Lecture note &#128221; 
 --  
-#### 1. 알고리즘(Algorithims)  
+#### &#10065; 알고리즘(Algorithims)  
 > 1. 알고리즘이란?
 
-&#128187; Assignment 
+Assignment &#128187; 
 --  
-#### LAB1  
+#### &#10065; LAB1  
 > 1. Finding path in Fantasia  
 > 2. Simple Encoding  
-
