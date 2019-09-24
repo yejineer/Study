@@ -5,7 +5,14 @@ SELECT ename, deptno, job
 FROM emp  
 WHERE deptno IN (20, 30)  
 AND ename LIKE '%AR%';  
-```
+```  
+### [ 답안 ]  
+```sql
+SELECT ename, deptno, job
+FROM emp
+WHERE (deptno=30 OR deptno=20)
+AND ename LIKE '%AR%';
+```    
 ### [ 결과 ]
 ENAME      |    DEPTNO     |    JOB        
 ---------- | ------------- | -----------  
@@ -21,7 +28,14 @@ WHERE e.deptno = d.deptno
 AND d.dname = 'RESEARCH'
 AND e.sal <= 2000;
 ```  
-  
+### [ 답안 ]  
+```sql
+SELECT COUNT(empno)
+FROM emp e JOIN dept d
+ON e.deptno = d.deptno
+WHERE dname = 'RESEARCH'
+AND sal <= 2000;
+```      
 2-(b)
 ===
 ```sql
@@ -30,6 +44,14 @@ FROM emp
 WHERE deptno IN (SELECT deptno FROM dept WHERE dname='RESEARCH')
 AND sal <= 2000;
 ```  
+### [ 답안 ]  
+```sql
+SELECT COUNT(empno)
+FROM emp e
+WHERE sal <= 2000
+AND deptno = (SELECT deptno FROM dept
+WHERE dname = 'RESEARCH');
+```    
 ### [ 결과 ]   
 사원 수 |
 --------|
@@ -44,6 +66,13 @@ WHERE e.sal >= s.losal AND e.sal <= s.hisal
 AND s.grade=5
 AND NVL(comm, 0) < 500;
 ```  
+### [ 답안 ]  
+```sql
+SELECT ename, sal, NVL(comm, 0) “수당”, sal*12+NVL(comm, 0) “연봉”
+FROM emp e, salgrade s
+WHERE e.sal BETWEEN s.losal AND s.hisal
+AND s.grade=5 AND NVL(e.comm, 0) <500;
+```    
 ### [ 결과 ]  
 ENAME     |SAL   |NVL(COMM,0)  |SAL\*12+NVL(COMM,0)
 ----------|------ |----------- |  --------------------------
@@ -53,10 +82,21 @@ KING      |5000   |0           |60000
 4
 ==
 ```sql
-SELECT ename, TO_CHAR(hiredate, 'YYYY"년" MM"월" DD"일"') hiredate, TRUNC(MONTHS_BETWEEN(SYSDATE, hiredate)/12, 0) as "SERVICE OF YEARS", TO_CHAR(ADD_MONTHS(hiredate, 360), 'YYYY"년" MM"월" DD"일"') retiredate
+SELECT ename,
+      TO_CHAR(hiredate, 'YYYY"년" MM"월" DD"일"') hiredate,
+      TRUNC(MONTHS_BETWEEN(SYSDATE, hiredate)/12, 0) as "SERVICE OF YEARS",
+      TO_CHAR(ADD_MONTHS(hiredate, 360), 'YYYY"년" MM"월" DD"일"') retiredate
 FROM emp
 order by hiredate;
 ```  
+### [ 답안 ]  
+```sql
+SELECT ename,
+      TO_CHAR(hiredate, 'YYYY"년" MM"월" DD"일"') AS “입사일”,
+      TRUNC(MONTHS_BETWEEN(SYSDATE, hiredate)/12, 0) AS “재직년수”,
+      TO_CHAR(ADD_MONTHS(hiredate, 12*30), 'YYYY"년" MM"월" DD"일"') AS “퇴사예정일”
+FROM emp e;
+```    
 ### [ 결과 ]  
 ENAME     |HIREDATE        |SERVICE OF YEARS |RETIREDATE      
 ----------| ----------------| ---------------- |----------------
@@ -83,7 +123,13 @@ FROM emp
 group by deptno, job
 order by deptno;
 ```  
-
+### [ 답안 ]  
+```sql
+SELECT deptno, job, COUNT(empno) AS “사원수”, AVG(sal) AS “평균급여”
+FROM emp
+GROUP BY deptno, job
+ORDER BY deptno, job;
+```    
 ### [ 결과 ]  
  DEPTNO    |JOB          |사원 수 |AVG(SAL)
 ---------- |---------    |--------|----------
@@ -108,6 +154,14 @@ WHERE d.deptno = e.deptno
 GROUP BY d.dname
 HAVING count(e.ename) >= 2;
 ```
+### [ 답안 ]  
+```sql
+SELECT dname, AVG(sal) “평균급여”
+FROM emp JOIN dept
+    ON emp.deptno = dept.deptno
+GROUP BY dname
+HAVING COUNT(empno) >= 2;
+```    
 6-(b)
 ==  
 ```sql
@@ -115,9 +169,26 @@ SELECT d.dname, avg(sal)
 FROM dept d, emp e
 WHERE d.deptno = e.deptno
 AND (SELECT count(*)
-        FROM emp)>=2
-        GROUP BY d.dname;
+     FROM emp)>=2
+GROUP BY d.dname;
 ```  
+### [ 답안 ]  
+```sql
+SELECT dname, avg_sal
+FROM   (SELECT dname, COUNT(empno) num_ emp, AVG(sal) avg_sal
+        FROM emp JOIN dept ON emp.deptno = dept.deptno
+        GROUP BY dname)
+WHERE num_emp >= 2;
+```
+또는
+```sql
+SELECT dname, avg_sal
+FROM   (SELECT deptno, COUNT(empno) num_ emp, AVG(sal) avg_sal
+        FROM emp
+        GROUP BY deptno) e, dept
+WHERE e.deptno = dept.deptno
+AND num_emp >= 2;
+```    
 ### [ 결과 ]
 DNAME         |AVG(SAL)
 --------------|-----------------
@@ -134,6 +205,12 @@ FROM emp e, dept d
 WHERE d.deptno = e.deptno(+)
 GROUP BY d.dname;
 ```  
+### [ 답안 ]  
+```sql
+SELECT dname, COUNT(empno) AS “사원수”, MAX(sal) AS “최대급여”
+FROM dept d LEFT OUTER JOIN emp e ON d.deptno=e.deptno
+GROUP BY dname;
+```    
 ### [ 결과 ]  
 DNAME         |COUNT(E.ENAME)|MAX(SAL)
 --------------|--------------|----------
@@ -151,8 +228,22 @@ FROM emp e1, emp e2
 WHERE e1.deptno = e2.deptno AND e1.ename != e2.ename
 ORDER BY e1.ename;
 ```  
-### (LISTAGG 사용시)  
-
+### [ 답안 ]  
+```sql
+SELECT e.ename, f.ename AS “동료사원”
+FROM emp e JOIN emp f
+ON e.deptno = f.deptno
+WHERE e.empno <> f.empno
+ORDER BY e.ename, f.ename;
+```    
+### [ 답안 (LISTAGG 사용시) ]  
+```sql
+SELECT e.ename, LISTAGG(f.ename, ‘, ‘) WITHIN GROUP (ORDER BY f.ename) AS “동료사원들”
+FROM emp e JOIN emp f ON e.deptno = f.deptno
+WHERE e.empno <> f.empno
+GROUP BY e.ename
+ORDER BY e.ename;
+```   
 ### [ 결과 ]    
 NAME      |COWORKER  
 ----------|----------
@@ -182,6 +273,14 @@ SELECT ename, sal, (CASE WHEN sal<1000 THEN sal*0.01 WHEN sal < 2000 THEN sal*0.
 FROM emp
 ORDER BY sal DESC;
 ```  
+### [ 답안 ]   
+```sql
+SELECT ename, sal, (CASE WHEN sal<1000 THEN sal*0.01 
+                         WHEN sal<2000 THEN sal*0.015     
+                         ELSE sal*0.02 END) AS "공제액"
+FROM emp
+ORDER BY sal DESC;
+```    
 ### [ 결과 ]    
 ENAME     |SAL       |DEDUCTION
 ----------|----------|----------
