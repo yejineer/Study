@@ -14,3 +14,9 @@ java.io.IOException: Cleartext HTTP traffic to www.kobis.or.kr not permitted
 >
   
 ```
+### [참고]  
+#### if)  
+&nbsp;&nbsp;&nbsp;&nbsp;Internet Permission도 줬는데 WebView에서 서버 응답을 못 받는다면,  
+#### Then)  
+  1. 접속 url을 https://로 시작하는 주소로 지정하거나,   
+  1. application보안설정을 변경(android:usesCleartextTraffic="true" 추가)하면 됨.
