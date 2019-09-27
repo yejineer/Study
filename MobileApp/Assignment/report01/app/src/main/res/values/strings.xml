@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">02_20170964_report01</string>
+    <string name="movies">전체 영화</string>
+    <string name="add_movie_info">영화 정보 기입</string>
+    <string name="update_movie_info">영화 정보 수정</string>
+    <string name="movie_title">영화 제목</string>
+    <string name="movie_actor">등장 인물</string>
+    <string name="movie_director">감독</string>
+    <string name="movie_rated">등급</string>
+    <string name="movie_time">상영 시간</string>
+</resources>
