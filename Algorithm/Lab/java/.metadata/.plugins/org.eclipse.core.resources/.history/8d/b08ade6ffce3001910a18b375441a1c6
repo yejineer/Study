@@ -1,0 +1,12 @@
+package q2_consecutiveNumbers;
+
+java util.Scanner;
+
+public class Consecutive {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		
+	}
+
+}

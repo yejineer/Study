@@ -1,0 +1,5 @@
+INDEX VERSION 1.131+C:\Users\bambi\Desktop\2019-2\Algorithm\LAB\java\.metadata\.plugins\org.eclipse.jdt.core
+3871643956.index
+878720587.index
+2023754903.index
+2445519266.index

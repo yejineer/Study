@@ -1,0 +1,10 @@
+package q2_consecutiveNumbers;
+
+public class CompleteVersion {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+
+	}
+
+}
