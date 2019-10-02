@@ -1,3 +1,26 @@
+# Thread 사용법  
+## 1. 초기화면
+![초기화면](https://user-images.githubusercontent.com/50271884/66024503-031d8280-e52f-11e9-8d75-09d2ae7f5e7c.png)
+  
+## 2. start 버튼 클릭 시  
+![start 클릭 시](https://user-images.githubusercontent.com/50271884/66025171-c3579a80-e530-11e9-8dd4-8d08ede67434.png)  
+  
+### 로그  
+![start클릭시 로그](https://user-images.githubusercontent.com/50271884/66024721-8b9c2300-e52f-11e9-8bac-54573dc2ee29.PNG)  
+  
+## 3. stop 버튼 클릭 시  
+![stop클릭 시](https://user-images.githubusercontent.com/50271884/66025314-1fbaba00-e531-11e9-8b99-947d18cbdda8.png)
+  
+### 로그
+![stop버튼 클릭 시 로그](https://user-images.githubusercontent.com/50271884/66024782-bdad8500-e52f-11e9-9f76-65128d78c299.PNG)  
+  
+## 4. thread 끝났을 시  
+![thread 다 끝나서](https://user-images.githubusercontent.com/50271884/66025004-60fe9a00-e530-11e9-8a74-2a18c9407f2d.PNG)  
+  
+## 5. toast 버튼 클릭 시  
+![toast클릭시](https://user-images.githubusercontent.com/50271884/66025347-39f49800-e531-11e9-8a7a-2517cf735d1d.png)
+  
+    
 ```java
 package mobile.example.network.toythread;
 
