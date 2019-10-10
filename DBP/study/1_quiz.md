@@ -1,8 +1,8 @@
 # 선미 문제  
   
 ### Q1. SQL 문제  
-1) 왼쪽 또는 오른쪽에서 문자를 삭제하는 함수는? TRIM  
-2) comm이 NULL값일 경우 0으로 변환하는 방법은? NVL(comm, 0)  
+1) 왼쪽 또는 오른쪽에서 문자를 삭제하는 함수는? **TRIM**  
+2) comm이 NULL값일 경우 0으로 변환하는 방법은? **NVL(comm, 0)**  
 3) ename과 ‘is a’와 job 이 세 컬럼을 하나의 컬럼으로 연결되어 출력하려면
 쿼리가 어떻게 나올지 쓰시오. (ename과 job은 모두 emp 테이블에 있다.)  
 ```sql
@@ -12,7 +12,7 @@ FROM emp;
   
 ### Q2. DDL & DML  
 ■ DDL(Data Definition Language) 문제  
-1) Column 이름 변경  
+1) Column 이름 변경   
 emp01 table에 있는 ename을 emp_name으로 변경하는 쿼리를 작성하시오.  
 ```sql
 ALTER TABLE emp01
@@ -47,32 +47,40 @@ WHERE e.deptno = 30 WITH READ ONLY;
 ``` 
   
 ### Q4.  
-1) Supertype 개체로의 통합을 뭐라 하는가? **RollUp**
-같은 맥락으로, Subtype 개체로의 분할은 뭐라 하는가? **RollDown**
-  
-2) 명명법에 대해 세 가지 쓰시오.  
+1) Supertype 개체로의 통합을 뭐라 하는가? **RollUp**  
+같은 맥락으로, Subtype 개체로의 분할은 뭐라 하는가? **RollDown**  
+    
+2) 명명법에 대해 세 가지 쓰시오.    
 ① **실제 업무에서 사용하는 용어 사용 (ex. 학생번호 -> 학번)**  
 ② **약어보다는 구체적 명칭 사용**  
 ③ **단수 명사 사용 (ex. 수강생들 -> 수강생)**
   
   
 # 선미 문제 풀이  
-### A1.
-1) **TRIM**
-2) **NVL(comm, 0)**
-3)
-
+### A1.  
+1) **TRIM**  
+2) **NVL(comm, 0)**  
+3)  
 ```sql
 SELECT ename || 'is a' || job
 FROM emp
 ```
+  
 ### A2.   
 ■ DDL  
-1) **ALTER TABLE emp01 RENAME COLUMN ename TO emp_name;**  
-2) **CREATE TABLE emp02 AS SELECT * FROM emp;**  
-■ DML  
+1)
+```sql
+ALTER TABLE emp01
+RENAME COLUMN ename TO emp_name;
+```
+  
+2)
+```sql
+CREATE TABLE emp02 AS SELECT * FROM emp;
+```
+   
+■ DML    
 1)   
-
 ```sql
 UPDATE dept
 SET (dname, location) = (SELECT dname, location
@@ -80,14 +88,16 @@ SET (dname, location) = (SELECT dname, location
                        WHERE deptno = 40)
 WHERE deptno = 20
 ```
+  
 ### A3.  
 **WITH CHECK OPTION**  
-### A4.   
+  
+### A4.     
 1) **정규화, 역정규화**  
 2)   
-  ①  **단어를 줄이지 말고 쓰기**   
-  ②  **실무에서 사용하는 단어로 쓰기**  
-  ③  **단수로 쓰기 (?)**   
+    1.  **단어를 줄이지 말고 쓰기**   
+    2.  **실무에서 사용하는 단어로 쓰기**  
+    3.  **단수로 쓰기 (?)**   
     
       
 # 내 문제
