@@ -71,3 +71,59 @@
   > Statement stmt = conn.createStatement();
   - 정적인 SQL문을 실행하고 그 결과를 반환하기 위해 사용되는 객체  
     // 정적인 SQL문: 바로 실행가능한 완전한 SQL
+    
+## 5. Statement 객체를 이용하여 SQL문 실행
+- **SELECT**문 실행
+  > ResultSet rs = stmt.executeQuery(query)
+  - **query**: 실행할 SQL 질의문
+  - **ResultSet** 타입 객체를 반환
+    
+- **INSERT, UPDATE, DELETE**문 실행
+  > int recordCount = stmt.executeUpdate(query)
+  - **query**: INSERT문, UPDATE문, DELETE문
+  - **삽입/변경/삭제된 행의 개수**를 반환
+  
+## 6. DBMS 응답 사용
+- **ResultSet**
+  - Statement.executeQuery()의 실행 결과로 반환되는 행들의 집합을 저장
+  - *내부적으로 커서를 사용하여* 결과 행들을 순차적으로 접근
+  
+- **ResultSet.next()**  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// while이나 for문 사용!
+  - ResultSet에 저장된 행들을 커서가 순서대로 가리키도록 함
+    - 최초 호출 시, 첫 번째 행을 가리키고 이후 호출될 때마다 커서를 다음 행으로 이동!
+  - *더 이상 가리킬 행이 없으면 false를 반환*
+  
+- ResultSet에서 현재 커서 위치의 컬럼 값 일기
+  - ResultSet객체를 rs가 참조한다고 가정
+  ![20191013_115521485_iOS](https://user-images.githubusercontent.com/50271884/66715276-78753700-edfc-11e9-8b7a-2628a309edd8.png)  
+  - rs.getString(n)과 같이 숫자를 쓸 경우, 질의의 SELECT절에 지정된 n번째 컬럼 값을 반환  
+  
+## 7. 자원 반납
+- DB 작업이 끝나면 각 자원을 반드시 반환해야 함!
+  ```java
+  Connection conn;
+  Statement stmt;
+  ResultSet rs;
+  
+  ...
+  
+  if (rs != null) {   // ResultSet 객체 존재
+    try { rs.close(); }   // rs == null이면 rs.close()할 때, NullPointException 발생
+    catch(SQLException ex) { ... }
+  }
+  if (stmt != null) {   // Statement 객체 존재
+    try { stmt.close(); }
+    catch(SQLException ex) { ... }
+  }
+  if (conn != null) {   // Connection 객체 존재
+    try { conn.close(); }
+    catch(SQLException ex) { ... }
+  }
+  ```
+  - stmt와 conn이 생성 안 될 수도 있음!!
+  - 메모리에서 삭제될 수 있게. ← Java는 Garbage Collector들이 있음
+  
+## JDBC Program Example
+- JdbcTest.java
+  ![20191013_122827106_iOS](https://user-images.githubusercontent.com/50271884/66715639-8af16f80-ee00-11e9-9e2d-34064da60b8d.png)    
+  
