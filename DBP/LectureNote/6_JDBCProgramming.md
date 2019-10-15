@@ -24,7 +24,7 @@
       - Interface: XADataSource 등
 <hr>
   
-## JDB API 사용 절차
+## JDBC API 사용 절차
 - 순서에 맞춰 코드 작성!
 ![20191013_110643657_iOS](https://user-images.githubusercontent.com/50271884/66714734-7196f600-edf5-11e9-8b1a-95fad4b6ff63.png)
 <hr>
@@ -68,7 +68,7 @@
 - ② **javax.sql.DataSource** Interface 이용  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //*실제 우리가 쓸 방법*
   - 하나의 물리적인 data source를 나타내며, 그것에 대한 연결(connection)을 생성하는 **factory**기능 수행
   - ① 방식의 대안: connection을 얻기 위한 더 좋은 방법
-  - 일반적으로 Appliation Server(ex. Tomcat)에서 클래스 구현 및 객체 생성
+  - 일반적으로 Application Server(ex. Tomcat)에서 클래스 구현 및 객체 생성
     - Database connection pooling 기능 지원
     - Java Naming and Directory Interface(JNDI) 서비스를 통해 DataSource 객체를 제공
   - 애플리케이션에서는 JNDI 서비스를 검색(lookup)하여 DataSource 객체를 획득 및 사용  
