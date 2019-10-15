@@ -1,6 +1,8 @@
 # 문제 범위
 Chapter 6. JDBC Programming   (+ SQL)  
   
+<hr>
+  
 # 민희 문제
 ### Q1
 Statement 객체를 생성하고, 그것으로 DELETE문을 실행하는 코드를 작성하시오.  
