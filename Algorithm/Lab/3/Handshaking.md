@@ -5,12 +5,14 @@
 # memoization을 활용한 재귀코드
 ```java
 for (int i = 0; i < k; i++) {
-			if (memo[2*i] == 0)
-				memo[2*i] = handshaking(2*i, memo);
-			if (memo[2*(k-1-i)] == 0)
-				memo[2*(k-1-i)] = handshaking(2*(k-1-i), memo);
-			count += memo[2*i] * memo[2*(k-1-i)];
-		}
-		return count;
+	if (memo[2*i] == 0)
+	memo[2*i] = handshaking(2*i, memo);
+	if (memo[2*(k-1-i)] == 0)
+	memo[2*(k-1-i)] = handshaking(2*(k-1-i), memo); // A
+	count += memo[2*i] * memo[2*(k-1-i)];
+}
+return count;
 ```
 
+# 문제점
+A에서 memo를 사용해야 효율성이 높아진다. 그렇지 않으면 빠른 시간 내에 결과를 내지 못한다.
