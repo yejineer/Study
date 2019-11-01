@@ -15,9 +15,9 @@ Chapter 8. HTTP, Servlet & JSP Review
 ### Q2. JSP page는 최초 요청 처리 시 (A), 이후 요청은 (B)다.  
 
 #### 📄 답
-(A) servlet으로 변환되고 메모리에 load되고
-(B) 변환 없이 메모리 상의 servlet에서 바로 처리된
-  
+(A) servlet으로 변환되고 메모리에 load되고  
+(B) 변환 없이 메모리 상의 servlet에서 바로 처리된  
+    
 <hr>  
 
 ### Q3. JSP Request 처리 과정을 서술하시오.
@@ -45,14 +45,37 @@ Chapter 8. HTTP, Servlet & JSP Review
 <hr>
   
 ### Q4. 다음 JSP 내장 객체의 데이터 저장 영역에 대해 설명하시오.
-(1) request :   
-(2) response :   
-(3) application :   
+#### (1) request :   
+#### (2) response :   
+#### (3) application :   
   
 #### 📄 답
 (1) 다른 page를 include하거나 다른 page로 forward할 때 전달됨  
 (2) 각 client가 여러 request들에 대해 유지 및 공유되는 영역  
 (3) Web container에서 관리하며 모든 client가 공유 가능  
+  
+<hr>
+
+# [민희 퀴즈]
+### Q1. GET 방식과 POST 방식의 간단한 특징을 쓰시오.
+  
+
+#### 📄 내 풀이
+
+  
+<hr>
+  
+### Q2.
+#### (1) JSP 내의 메소드 선언은 가급적 피하고 ①과 ②를 사용하는 것이 바람직하다.
+#### (2) ③은 JSP 내의 Java Code를 기술한 부분을 뜻하며 Servlet으로 변환될 때 ④ 메소드 안에 포함된다.
+
+<hr>
+  
+# Q3. session, application 객체의 저장 영역에 대해 간단히 서술하시오.
+  
+<hr>
+  
+# Q4. include 지시자와 include Action의 형식과 차이점을 서술하시오.
   
 <hr>
   
