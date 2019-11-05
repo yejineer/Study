@@ -5,13 +5,16 @@ Chapter 9. MVC Architecture  &nbsp;&nbsp;&nbsp; *(매우 중요)*
   
 # 내 문제
 ### Q1. MVC pattern의 각 구성요소의 역할을 설명하고, MVC pattern을 쓰지 않은 Model 1과 같은 구조는 어떨 때 부적합한지 서술하시오.
- 
-#### 📄 답 
-Model : business logic를 구현하고 database, file system등과의 연동을 하며 data 저장/관리를 수행한다.  
-View : UI 및 presentation logic 구현  
-Controller : Model과 View 사이의 실행 흐름 제어  
+① Model :  
+② View :    
+③ Controller :  
+④ 단점 :  
   
-단점: 
+#### 📄 답 
+① Model : business logic를 구현하고 database, file system등과의 연동을 하며 data 저장/관리를 수행한다.  
+② View : UI 및 presentation logic 구현  
+③ Controller : Model과 View 사이의 실행 흐름 제어   
+④ 단점: 
 Model 1은 JSP page에서 presentation logic과 business logic, 입출력 데이터 처리, 실행 흐름 제어 등을 모두 구현하는 구조이다. 
 이 구조는 개발 및 유지보수, 재활용에 어려움이 크므로 복잡하고 변경이 많은 application의 경우엔 부적합하다.
   
@@ -33,14 +36,59 @@ Model 1은 JSP page에서 presentation logic과 business logic, 입출력 데이
   
 <hr>
   
-### Q3. 
+### Q3. DispatcherServlet class(Front Controller) 코드의 빈칸을 채우시오.
+```java
+public class DispatcherServlet extends ①________ {
+    private RequestMapping rm;
+    @Override
+    public void init() throws ServletException {
+        rm = new RequestMapping();
+        rm.initMapping();
+    }
 
+    @Override
+    protected void ②________(HttpServletRequest request, HttpServletResponse response) 
+    	throws ServletException, IOException {
+    	String contextPath = request.getContextPath();
+    	String servletPath = request.getServletPath();
+    	
+    	// URL 중 servletPath에 대응되는 controller를 구함
+        Controller controller = rm.findController(servletPath);
+        try {
+        	// controller를 통해 request 처리 후, 이동할 uri를 반환 받음
+            String uri = controller.③________(request, response);
+            
+ 			// 반환된 uri에 따라 forwarding 또는 redirection 여부를 결정하고 이동 
+            if (uri.startsWith("redirect:")) {	
+            	// redirection 지시
+            	String targetUri = contextPath + uri.substring("redirect:".length());
+            	response.④__________(targetUri);	// redirect to url            
+            }
+            else {
+            	// forwarding 수행
+            	RequestDispatcher rd = request.⑤___________(uri);
+               rd.forward(request, response);		// forward to the view page
+            }                   
+        } catch (Exception e) {
+            logger.error("Exception : {}", e);
+            throw new ServletException(e.getMessage());
+        }
+    }
+}
+```
 #### 📄 답
+① HttpServlet
+② service
+③ execute
+④ sendRedirct
+⑤ getRequestDispatcher
 
 <hr>
 
-### Q
+
+### Q4. request.getAttribute()와 request.getParameter()의 차이는?
  
 #### 📄 답
-
+getParameter()메서드의 경우 String타입을 반환하는 반면, getAttribute()는 Object 타입을 리턴하기 때문에 주로 빈 객체나 다른 클래스를 받아올때 사용된다. 또한, getParameter()는 웹브라우저에서 전송받은 request영역의 값을 읽어오고 getAttribute()의 경우 setAttribute()속성을 통한 설정이 없으면 무조건 null값을 리턴한다.  
+  
 <hr>
