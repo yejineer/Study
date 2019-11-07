@@ -23,13 +23,13 @@ import java.util.Random;
 
 public class Vladimir {
 
-	public static void insertionSort(int[] arr) {
+	public static void insertionSort(int[] arr, int p, int q) {
 		int temp, j, minIdx;
 
-		for (int i = 1; i < arr.length; i++) {
+		for (int i = p+1; i <= q; i++) {
 			// i보다 작은 j(i-1, ..., 0)중에서 arr[j]>arr[i]인 값들 중 가장 값이 작은 요소 찾기
 			minIdx = -1;
-			for (j = i - 1; j >= 0; j--)
+			for (j = i - 1; j >= p; j--)
 				if (arr[j] > arr[i]) {
 					minIdx = j;
 					if (arr[j] < arr[minIdx])
@@ -54,7 +54,7 @@ public class Vladimir {
 
 	public static void dualPivotQuicksort(int[] arr, int p, int q) {
 		if (q - p + 1 < n0)
-			insertionSort(arr);
+			insertionSort(arr, p, q);
 		else {
 			if (p >= q)
 				return;
@@ -69,12 +69,18 @@ public class Vladimir {
 			while (k < gt) {
 				if (arr[k] < arr[p]) {
 					swap(arr, lt, k);
-					lt++; k++;
+					lt++;
 				} else if (arr[k] > arr[q] ) {
 					while (arr[gt] > arr[q] && k < gt)
 						gt--;
 					swap(arr, k, gt); gt--;
+					
+					if (arr[k] < arr[p]) {
+						swap(arr, lt, k);
+						lt++;
+					}
 				}
+				k++;
 			}
 
 			lt--;
@@ -93,7 +99,7 @@ public class Vladimir {
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 
-		int len = 2000;
+		int len = 100000;
 		int[] arr = new int[len];
 		Random r = new Random();
 		for (int j = 0; j < len; j++) {
@@ -103,7 +109,8 @@ public class Vladimir {
 //		System.out.println('끝');
 		
 		long startTime = System.currentTimeMillis();
-		dualPivotQuicksort(arr, 0, arr.length - 1);
+//		dualPivotQuicksort(arr, 0, arr.length - 1);
+		insertionSort(arr, 0, arr.length-1);
 		long endTime = System.currentTimeMillis();
 		long elapsedTime = endTime - startTime;
 		System.out.println("수행 시간: " + elapsedTime / 1000.0 + "s");
@@ -113,6 +120,7 @@ public class Vladimir {
 	}
 
 }
+
 
 ```
 # References
