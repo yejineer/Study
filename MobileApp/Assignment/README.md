@@ -4,3 +4,4 @@
 # report02
 Open API 이용해 Cursor Adapter로 리스트뷰 구현
 - Naver 지도 API
+- 서울열린데이터광장 - 관광거리 정보 (한국어)
