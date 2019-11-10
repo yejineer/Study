@@ -13,3 +13,7 @@
     
   - https://navermaps.github.io/maps.js.ncp/docs/tutorial-2-Getting-Started.html  
     
+# 주의사항
+- 멤버변수 이름은 각 클래스마다 구별되게 명확하게 짓기!
+- Activity 새로 만들시 Manifest.xml에 꼭 기입하기
+  - intent를 적절히 활용해 잘 전달하기
