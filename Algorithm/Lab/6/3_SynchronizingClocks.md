@@ -37,4 +37,4 @@
 > 2 (→ 2번 누르면 모든 시계가 12시로)
 
 # 소스 코드
-[SynchronizingClocks.java](https://github.com/yejineer/Study/edit/master/Algorithm/Lab/6/SynchronizingClocks.java)
+[SynchronizingClocks.java](https://github.com/yejineer/Study/tree/master/Algorithm/Lab/6/SynchronizingClocks.java)
