@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?><project-modules id="moduleCoreId" project-version="1.5.0">
+    <wb-module deploy-name="FileUploadExample(확장자를war로변경후사용)">
+        <wb-resource deploy-path="/" source-path="/WebContent" tag="defaultRootSource"/>
+        <wb-resource deploy-path="/WEB-INF/classes" source-path="/src"/>
+        <property name="context-root" value="FileUploadExample(확장자를war로변경후사용)"/>
+        <property name="java-output-path" value="/FileUploadExample(확장자를war로변경후사용)/build/classes"/>
+    </wb-module>
+</project-modules>
