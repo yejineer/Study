@@ -19,17 +19,39 @@
 - OPTIONS : 웹서버측 제공 메소드에 대한 질의
 
 # GET vs POST
-- GET
+- **GET**
   - 가장 일반적인 request method
   - **Message body나 header가 필요없음**
   - **Parameters passing**
     - **URL 내에 포함되거나 HTML form으로부터 입력된 값**
     - **URL 내에 query string(name/value pairs)으로 포함되어 전달됨**
     - ASCII 문자열만 가능하고 길이의 제한이 있으며 URL 상에 노출됨
-- POST
+  - 사용 예
+    - 웹브라우저의 주소 창에 URL 입력
+    - 웹페이지 내에서 링크 클릭
+    - HTML Form에서 요청
+    
+- **POST**
   - **Message body를 가짐**
   - **Parameters(data) passing**
     - **HTML form으로부터 입력된 값**
     - **Message body에 포함되어 전달됨**
     - Binary data도 가능하고 길이의 제한이 없으며 URL에 노출되지 않음
   - 대량의 중요 데이터 전송이나 file upload 등에 적합
+  - 사용 예
+    - POST는 폼을 사용하는 수 밖에 없다!
+
+# Status Codes
+- Status Codes & Mesages
+  -
+  -
+  -
+- 종류
+  - 1xx:
+  - 2xx:
+  - 3xx:
+  - 4xx:
+  - 5xx:
+- ex
+  
+   
