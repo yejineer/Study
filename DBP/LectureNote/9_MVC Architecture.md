@@ -1,5 +1,5 @@
 # MVC Architecture
-## WEb Application의 구조
+## Web Application의 구조
 - Model 1
   - JSP page에서 presentation logic과 business logic, 입출력 데이터 처리, 실행 흐름 제어 등을 모두 구현
   - 장점
