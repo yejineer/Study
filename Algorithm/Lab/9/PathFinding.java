@@ -1,3 +1,5 @@
+/* ë§¤íŠ¸ë¦­ìŠ¤ ì•ˆì˜ ê°’ëŒ€ë¡œ ì›€ì§ì—¬ì„œ ëª©í‘œë¡œ í•˜ëŠ” ê³³ì— ì´ë™í•  ìˆ˜ ìˆëŠ”ì§€ í™•ì¸ (True, False)*/
+
 package q1_Path_finding;
 
 public class PathFinding {
@@ -41,15 +43,15 @@ public class PathFinding {
 	}
 	
 	static int [][]memo;
-	/* Àç±Í È£Ãâ. Áßº¹ È£ÃâÀ» ¹æÁö*/
+	/* ì¬ê·€ í˜¸ì¶œ. ì¤‘ë³µ í˜¸ì¶œì„ ë°©ì§€*/
 	public static boolean find_memo(int x, int y) {
 		if (x >= map.length) return false;
 		if (y >= map.length) return false;
 		if (x == map.length-1 && y == map.length) return true;
 		
-		if (memo[x][y] != -1) return memo[x][y] == 1; // °è»êÀÌ µÇ¾î ÀÖ´Ù. (0,0)~(x,y)±îÁö path°¡ ÀÖÀ¸¸é 1·Î Ç¥½ÃµÊ
+		if (memo[x][y] != -1) return memo[x][y] == 1; // ê³„ì‚°ì´ ë˜ì–´ ìˆë‹¤. (0,0)~(x,y)ê¹Œì§€ pathê°€ ìˆìœ¼ë©´ 1ë¡œ í‘œì‹œë¨
 		
-		memo[x][y] = 0;	// °è»êÀÌ ¾È µÇ¾î ÀÖ´Ù.
+		memo[x][y] = 0;	// ê³„ì‚°ì´ ì•ˆ ë˜ì–´ ìˆë‹¤.
 		if (find_memo(x+map[x][y], y))
 			memo[x][y] = 1;
 		if (find_memo(x, y+map[x][y]))
@@ -59,9 +61,9 @@ public class PathFinding {
 	}
 	
 	static int [][]dp;
-	/* Dynamic Programming. memoÀÇ ±â´É¸¸ »ı°¢ */
+	/* Dynamic Programming. memoì˜ ê¸°ëŠ¥ë§Œ ìƒê° */
 	public static boolean find_DP(int x, int y) {
-		// ÇöÀç ÁöÁ¡ÀÌ 1ÀÌ¸é (0, 0)~(i, j)±îÁö path°¡ ÀÖÀ¸¹Ç·Î ´õ °¡º¸ÀÚ
+		// í˜„ì¬ ì§€ì ì´ 1ì´ë©´ (0, 0)~(i, j)ê¹Œì§€ pathê°€ ìˆìœ¼ë¯€ë¡œ ë” ê°€ë³´ì
 		dp = new int[map.length][map.length];
 		for (int i=0; i<map.length; i++)
 			for (int j=0; j<map.length; j++)
