@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">어떤거리</string>
+    <string name="api_url_street">http://api.data.go.kr/openapi/area-spcliz-stret-std?serviceKey=</string>
+    <string name="key_data">wc%2F2o39muTYtrjNvN8iQKjh0B5vjk9cT6%2FvTsFxe08yHCJd07fQKJFVMJFE1SYG2mXjBmdGXDluQlhxuLYtamg%3D%3D</string>
+    <string name="key_seoul">4a4f637a47796a793734494b4e495a</string>
+    <string name="tv_title">관광거리</string>
+    <string name="hint_keyword">ex) 전라남도 광양시, 울산광역시 중구</string>
+</resources>
