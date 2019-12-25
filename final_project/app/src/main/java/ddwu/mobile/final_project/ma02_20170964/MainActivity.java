@@ -2,9 +2,11 @@ package ddwu.mobile.final_project.ma02_20170964;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.EditText;
@@ -52,7 +54,9 @@ public class MainActivity extends AppCompatActivity {
         adapter.setList(resultList);    // Adapter 에 파싱 결과를 담고 있는 ArrayList 를 설정
         adapter.notifyDataSetChanged();
         lvList.setAdapter(adapter);
-
+        /* DB 저장 코드 */
+        insertDB(resultList);
+        Log.i(TAG, "db저장");
         //		리스트 뷰 클릭 처리
         lvList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -66,9 +70,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onClick(View v) {
-        switch(v.getId()) {
+        switch (v.getId()) {
             case R.id.btnSearch:
-                
+                String search_keyword = etTarget.getText().toString().trim();
+                Toast.makeText(this, "clicked!" + search_keyword, Toast.LENGTH_SHORT).show();
+                searchStreets(search_keyword);
                 break;
         }
     }
@@ -91,5 +97,52 @@ public class MainActivity extends AppCompatActivity {
         super.onDestroy();
 //        cursor 사용 종료
         if (cursor != null) cursor.close();
+    }
+
+    private void searchStreets(String keyword) {
+//        DB에서 데이터를 읽어와 Adapter에 설정
+        SQLiteDatabase db = helper.getReadableDatabase();
+        Log.d(TAG, "readAllStreet들어옴. query 실행 전");
+        cursor = db.rawQuery("select * from " + StreetDBHelper.TABLE_NAME + " where " + StreetDBHelper.COL_NAME +
+                                " LIKE '%" + keyword + "%'", null);
+        Log.d(TAG, "select * from " + StreetDBHelper.TABLE_NAME + " where " + StreetDBHelper.COL_NAME +
+                " LIKE '%" + keyword + "%';");
+        resultList.clear();
+        while(cursor.moveToNext()) {
+            TourStreetDto dto = new TourStreetDto();
+            dto.set_id(cursor.getInt(cursor.getColumnIndex("_id")));
+            dto.setName(cursor.getString(cursor.getColumnIndex(StreetDBHelper.COL_NAME)));
+            dto.setStreetInfo(cursor.getString(cursor.getColumnIndex(StreetDBHelper.COL_INFO)));
+            dto.setAddress(cursor.getString(cursor.getColumnIndex(StreetDBHelper.COL_ADDR)));
+            dto.setStoreNum(cursor.getString(cursor.getColumnIndex(StreetDBHelper.COL_STORENUM)));
+            dto.setInstitution(cursor.getString(cursor.getColumnIndex(StreetDBHelper.COL_INSTT)));
+            dto.setLatitude(cursor.getString(cursor.getColumnIndex(StreetDBHelper.COL_LAT)));
+            dto.setHardness(cursor.getString(cursor.getColumnIndex(StreetDBHelper.COL_HAR)));
+            resultList.add(dto);
+        }
+        adapter.notifyDataSetChanged(); // DB의 내용으로 갱신한 contactList의 내용을 ListView에 반영하기 위해 호출
+        helper.close();
+    }
+
+    public void insertDB(ArrayList<TourStreetDto> list) {
+        //			DB 데이터 삽입 작업 수행
+
+        SQLiteDatabase db = helper.getWritableDatabase();
+        db.delete(StreetDBHelper.TABLE_NAME, null, null); // 안하면 insert문 계속 쌓임
+        for (TourStreetDto dto : list) {
+            ContentValues row = new ContentValues();
+            row.put(StreetDBHelper.COL_NAME, dto.getName());
+            row.put(StreetDBHelper.COL_INFO, dto.getStreetInfo());
+            row.put(StreetDBHelper.COL_ADDR, dto.getAddress());
+            row.put(StreetDBHelper.COL_STORENUM, dto.getStoreNum());
+            row.put(StreetDBHelper.COL_INSTT, dto.getInstitution());
+            row.put(StreetDBHelper.COL_LAT, dto.getLatitude());
+            row.put(StreetDBHelper.COL_HAR, dto.getHardness());
+
+            db.insert(StreetDBHelper.TABLE_NAME, null, row);
+
+        }
+        helper.close();
+
     }
 }

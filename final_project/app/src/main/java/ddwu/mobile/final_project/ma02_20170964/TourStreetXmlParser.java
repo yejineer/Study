@@ -4,7 +4,6 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserFactory;
 
 import java.io.BufferedReader;
-import java.io.StringReader;
 import java.util.ArrayList;
 
 public class TourStreetXmlParser {
@@ -91,5 +90,7 @@ public class TourStreetXmlParser {
 
         return resultList;
     }
+
+
 }
 
