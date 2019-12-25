@@ -11,6 +11,8 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import java.io.BufferedReader;
@@ -31,6 +33,8 @@ public class MainActivity extends AppCompatActivity {
 
     StreetDBHelper helper;
     Cursor cursor;
+
+    RadioButton radioButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,14 +71,32 @@ public class MainActivity extends AppCompatActivity {
 //                startActivity(intent);
             }
         });
+
+        RadioGroup radioGroup = (RadioGroup)findViewById(R.id.radioGroup);
+        radioButton = (RadioButton)findViewById(R.id.radio_keyword);
+
+        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                switch (checkedId){
+                    case R.id.radio_keyword:
+                        radioButton = (RadioButton)findViewById(R.id.radio_keyword);
+                        break;
+                    case R.id.radio_area:
+                        radioButton = (RadioButton)findViewById(R.id.radio_area);
+                        break;
+                }
+            }
+        });
+
     }
 
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btnSearch:
-                String search_keyword = etTarget.getText().toString().trim();
-                Toast.makeText(this, "clicked!" + search_keyword, Toast.LENGTH_SHORT).show();
-                searchStreets(search_keyword);
+                String input = etTarget.getText().toString().trim();
+                Toast.makeText(this, "clicked!" + input, Toast.LENGTH_SHORT).show();
+                searchStreets(input, radioButton);
                 break;
         }
     }
@@ -99,12 +121,18 @@ public class MainActivity extends AppCompatActivity {
         if (cursor != null) cursor.close();
     }
 
-    private void searchStreets(String keyword) {
+    private void searchStreets(String keyword, RadioButton radioButton) {
 //        DB에서 데이터를 읽어와 Adapter에 설정
         SQLiteDatabase db = helper.getReadableDatabase();
-        Log.d(TAG, "readAllStreet들어옴. query 실행 전");
-        cursor = db.rawQuery("select * from " + StreetDBHelper.TABLE_NAME + " where " + StreetDBHelper.COL_NAME +
-                                " LIKE '%" + keyword + "%'", null);
+
+        if (radioButton.getId() == R.id.radio_keyword) {
+            cursor = db.rawQuery("select * from " + StreetDBHelper.TABLE_NAME +
+                    " where " + StreetDBHelper.COL_NAME + " like '%" + keyword + "%'", null);
+        } else if (radioButton.getId() == R.id.radio_area) {
+            cursor = db.rawQuery("select * from " + StreetDBHelper.TABLE_NAME +
+                    " where " + StreetDBHelper.COL_ADDR + " like '%" + keyword + "%'", null);
+        }
+
         Log.d(TAG, "select * from " + StreetDBHelper.TABLE_NAME + " where " + StreetDBHelper.COL_NAME +
                 " LIKE '%" + keyword + "%';");
         resultList.clear();
