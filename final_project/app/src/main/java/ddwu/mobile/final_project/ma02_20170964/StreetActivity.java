@@ -1,21 +1,20 @@
 package ddwu.mobile.final_project.ma02_20170964;
 
-import android.Manifest;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.location.Location;
-import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.ResultReceiver;
 import android.util.Log;
 import android.view.View;
-import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
 
 import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
@@ -30,6 +29,7 @@ import com.google.android.libraries.places.api.net.FetchPlaceRequest;
 import com.google.android.libraries.places.api.net.FetchPlaceResponse;
 import com.google.android.libraries.places.api.net.PlacesClient;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -40,29 +40,43 @@ import noman.googleplaces.PlacesListener;
 
 public class StreetActivity extends AppCompatActivity implements OnMapReadyCallback {
 
-    final static String TAG = "MainActivity";
-    final static int PERMISSION_REQ_CODE = 100;
+    final static String TAG = "StreetActivity";
 
     /*UI*/
+    private TextView tvStreetName;
+    private TextView tvStreetAddr;
+    private TextView tvStreetInfo;
     private GoogleMap mGoogleMap;
     private MarkerOptions markerOptions;
-    private EditText etKeyword;
+    private Marker centerMarker;
     /*DATA*/
     // TODO: Place 클라이언트 객체 선언
     private PlacesClient placesClient;
-    private Location loc;
 
+    private LatLngResultReceiver latLngResultReceiver;
+    Location loc;
+    LatLng streetLoc;
+
+    TourStreetDto dto;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-//        etKeyword = findViewById(R.id.etKeyword);
+        setContentView(R.layout.activity_street);
+        tvStreetName = (TextView)findViewById(R.id.tv_streetName);
+        tvStreetAddr = (TextView)findViewById(R.id.tv_streetAddr);
+        tvStreetInfo = (TextView)findViewById(R.id.tv_streetInfo);
 
-        // 권한 확인 후 권한이 있을 경우 맵 로딩 실행
-        if (checkPermission()) {
-            mapLoad();
-        }
+        /* MainActivity가 전달한 intent에서 latitude, hardness가져와 centerMarker찍기(없으면 도로명주소로)*/
+        dto = (TourStreetDto)getIntent().getSerializableExtra("dto");
+        tvStreetName.setText(dto.getName());
+        tvStreetAddr.setText(dto.getAddress());
+        tvStreetInfo.setText(dto.getStreetInfo());
+        Log.d(TAG, "위도: " + dto.getLatitude() + " 경도: " + dto.getHardness());
+
+        latLngResultReceiver = new LatLngResultReceiver(new Handler()); // IntentService가 생성하는 결과 수신용 ResultReceiver
+
+        mapLoad();
 
         // TODO: Places 초기화 및 클라이언트 생성
         Places.initialize(getApplicationContext(), getString(R.string.google_api_key));
@@ -75,19 +89,13 @@ public class StreetActivity extends AppCompatActivity implements OnMapReadyCallb
         mGoogleMap = googleMap;
         Log.d(TAG, "Map ready");
 
-        // 맵 로딩 후 내 위치 표시 버튼 관련 설정
-        mGoogleMap.setMyLocationEnabled(true);
-        mGoogleMap.setOnMyLocationButtonClickListener(new GoogleMap.OnMyLocationButtonClickListener() {
-            @Override
-            public boolean onMyLocationButtonClick() {
-                Toast.makeText(StreetActivity.this, "Clicked!", Toast.LENGTH_SHORT).show();
-                return false;
-            }
-        });
-        mGoogleMap.setOnMyLocationClickListener(locationClickListener);
-
-        markerOptions = new MarkerOptions();
-//        mGeoDataClient = Places.getGeoDataClient(MainActivity.this);
+        if (dto.getLatitude() != "" && dto.getHardness() != "") {
+            streetLoc = new LatLng(Double.valueOf(dto.getLatitude()), Double.valueOf(dto.getHardness()));
+            settingMap();
+        } else {
+            Log.d(TAG, "startLatLngService시작함!");
+            startLatLngService(dto.getAddress());
+        }
 
         mGoogleMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
             @Override
@@ -125,16 +133,33 @@ public class StreetActivity extends AppCompatActivity implements OnMapReadyCallb
         });
     }
 
-    GoogleMap.OnMyLocationClickListener locationClickListener = new GoogleMap.OnMyLocationClickListener() {
-        @Override
-        public void onMyLocationClick(@NonNull Location location) {
-            String mag = String.format("현재 위치: (%f, %f)", location.getLatitude(), location.getLongitude());
-            loc = location;
-            Toast.makeText(StreetActivity.this, mag, Toast.LENGTH_LONG).show();
-        }
-    };
+    /*구글맵을 멤버변수로 로딩*/
+    private void mapLoad() {
+        // SupportMapFragment 는 하위 호환 고려 시 사용, activity_main 의 MapFragment 도 동일한 타입으로 선언
+        SupportMapFragment mapFragment =
+                (SupportMapFragment)StreetActivity.this.getSupportFragmentManager().findFragmentById(R.id.map);
+        mapFragment.getMapAsync(StreetActivity.this);      // 매개변수 this: MainActivity 가 OnMapReadyCallback 을 구현하므로
+    }
 
+    private void settingMap() {
+        mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(streetLoc, 17));
+//            mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLoc, 17));
 
+        markerOptions = new MarkerOptions();
+        markerOptions.position(streetLoc);
+//        mGeoDataClient = Places.getGeoDataClient(MainActivity.this);
+        centerMarker = mGoogleMap.addMarker(markerOptions);
+
+        // 마커 정보 지정
+        markerOptions= new MarkerOptions();
+        markerOptions.position(streetLoc);
+        markerOptions.title(dto.getName());
+        markerOptions.snippet("총 길이: " + dto.getLength() + " m");
+
+        // 지도에 마커 추가 후 추가한 마커 정보 기록
+        centerMarker = mGoogleMap.addMarker(markerOptions);
+        centerMarker.showInfoWindow();
+    }
 
     public void onClick(View v) {
         switch(v.getId()) {
@@ -145,7 +170,7 @@ public class StreetActivity extends AppCompatActivity implements OnMapReadyCallb
                         .key(getString(R.string.google_api_key))
                         .latlng(loc.getLatitude(), loc.getLongitude())
                         .radius(500)
-                        .type(etKeyword.getText().toString().trim())
+                        .type("cafe")
                         .language("ko", "KR")
                         .build()
                         .execute();
@@ -187,44 +212,42 @@ public class StreetActivity extends AppCompatActivity implements OnMapReadyCallb
         }
     };
 
-
-    /*구글맵을 멤버변수로 로딩*/
-    private void mapLoad() {
-        // SupportMapFragment 는 하위 호환 고려 시 사용, activity_main 의 MapFragment 도 동일한 타입으로 선언
-        SupportMapFragment mapFragment =
-                (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);      // 매배변수 this: MainActivity 가 OnMapReadyCallback 을 구현하므로
+    /* 주소 → 위도/경도 변환 IntentService 실행 */
+    private void startLatLngService(String address) {
+        Log.d(TAG, "startLatLngService 내부 들어옴!");
+        Intent intent = new Intent(this, FetchLatLngIntentService.class);
+        intent.putExtra(Constants.RECEIVER, latLngResultReceiver);
+        intent.putExtra(Constants.ADDRESS_DATA_EXTRA, address);
+        startService(intent);
     }
 
-    /* 필요 permission 요청 */
-    private boolean checkPermission() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION)
-                    != PackageManager.PERMISSION_GRANTED
-                    && checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION)
-                    != PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions(this,
-                        new String[] {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION },
-                        PERMISSION_REQ_CODE);
-                return false;
-            }
+    /* 주소 → 위도/경도 변환 ResultReceiver */
+    class LatLngResultReceiver extends ResultReceiver {
+        public LatLngResultReceiver(Handler handler) {
+            super(handler);
         }
-        return true;
-    }
 
+        @Override
+        protected void onReceiveResult(int resultCode, Bundle resultData) {
+            Log.d(TAG, "onReceiveResult 들어옴!");
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if(requestCode == PERMISSION_REQ_CODE) {
-            if(grantResults[0] == PackageManager.PERMISSION_GRANTED &&
-                    grantResults[1] == PackageManager.PERMISSION_GRANTED) {
-                // 퍼미션을 획득하였을 경우 맵 로딩 실행
-                mapLoad();
+            ArrayList<LatLng> latLngList = null;
+
+            if (resultCode == Constants.SUCCESS_RESULT) {
+                if (resultData == null) return;
+                latLngList = (ArrayList<LatLng>) resultData.getSerializable(Constants.RESULT_DATA_KEY);
+                if (latLngList == null) {
+                    Toast.makeText(StreetActivity.this, "주소에 해당하는 위도/경도가 없습니다.", Toast.LENGTH_SHORT).show();
+                } else {
+                    LatLng latlng = latLngList.get(0);
+                    streetLoc = new LatLng(latlng.latitude, latlng.longitude);
+                    Log.d(TAG, String.valueOf(latlng.latitude) + String.valueOf(latlng.longitude));
+                    settingMap();
+                }
             } else {
-                // 퍼미션 미획득 시 액티비티 종료
-                Toast.makeText(this, "앱 실행을 위해 권한 허용이 필요함", Toast.LENGTH_SHORT).show();
-                finish();
+                Toast.makeText(StreetActivity.this, "주소 → 위도/경도 실패!", Toast.LENGTH_SHORT).show();
             }
         }
     }
+
 }

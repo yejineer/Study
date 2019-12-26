@@ -24,6 +24,12 @@
             </intent-filter>
         </activity>
         <activity android:name=".StreetActivity"></activity>
+        <service
+            android:name=".FetchLatLngIntentService"
+            android:exported="false"/>
+        <service
+            android:name=".FetchAddressIntentService"
+            android:exported="false"/>
     </application>
 
 </manifest>

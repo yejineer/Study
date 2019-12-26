@@ -78,10 +78,10 @@ public class TourStreetXmlParser {
                                 dto.setInstitution(parser.getText());
                                 break;
                             case LATITUDE:
-                                dto.setLatitude(parser.getText());
+                                dto.setLatitude(parser.getText().trim());
                                 break;
                             case HARDNESS:
-                                dto.setHardness(parser.getText());
+                                dto.setHardness(parser.getText().trim());
                                 break;
                         }
                         tagType = TagType.NONE;
