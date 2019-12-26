@@ -3,6 +3,7 @@ package ddwu.mobile.final_project.ma02_20170964;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.ContentValues;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
@@ -66,9 +67,9 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Toast.makeText(MainActivity.this, "clicked!", Toast.LENGTH_SHORT).show();
-//                Intent intent = new Intent(MainActivity.this, StreetActivity.class);
-//                intent.putExtra("dto", resultList.get(position));
-//                startActivity(intent);
+                Intent intent = new Intent(MainActivity.this, StreetActivity.class);
+                intent.putExtra("dto", resultList.get(position));
+                startActivity(intent);
             }
         });
 
@@ -142,6 +143,7 @@ public class MainActivity extends AppCompatActivity {
             dto.setName(cursor.getString(cursor.getColumnIndex(StreetDBHelper.COL_NAME)));
             dto.setStreetInfo(cursor.getString(cursor.getColumnIndex(StreetDBHelper.COL_INFO)));
             dto.setAddress(cursor.getString(cursor.getColumnIndex(StreetDBHelper.COL_ADDR)));
+            dto.setLength(cursor.getString(cursor.getColumnIndex(StreetDBHelper.COL_LENGTH)));
             dto.setStoreNum(cursor.getString(cursor.getColumnIndex(StreetDBHelper.COL_STORENUM)));
             dto.setInstitution(cursor.getString(cursor.getColumnIndex(StreetDBHelper.COL_INSTT)));
             dto.setLatitude(cursor.getString(cursor.getColumnIndex(StreetDBHelper.COL_LAT)));
@@ -162,6 +164,7 @@ public class MainActivity extends AppCompatActivity {
             row.put(StreetDBHelper.COL_NAME, dto.getName());
             row.put(StreetDBHelper.COL_INFO, dto.getStreetInfo());
             row.put(StreetDBHelper.COL_ADDR, dto.getAddress());
+            row.put(StreetDBHelper.COL_LENGTH, dto.getLength());
             row.put(StreetDBHelper.COL_STORENUM, dto.getStoreNum());
             row.put(StreetDBHelper.COL_INSTT, dto.getInstitution());
             row.put(StreetDBHelper.COL_LAT, dto.getLatitude());

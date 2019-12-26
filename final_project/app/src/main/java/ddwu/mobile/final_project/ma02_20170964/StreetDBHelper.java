@@ -13,6 +13,7 @@ public class StreetDBHelper extends SQLiteOpenHelper {
     public final static String COL_NAME = "name";           // 거리명
     public final static String COL_INFO = "info";           // 거리 정보
     public final static String COL_ADDR = "address";        // 도로명 주소
+    public final static String COL_LENGTH = "length";       // 총 길이
     public final static String COL_STORENUM = "store_num";  // 점포 수
     public final static String COL_INSTT = "institution";   // 관리 기관 명
     public final static String COL_LAT = "latitude";        // 위도
@@ -28,12 +29,12 @@ public class StreetDBHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL("create table " + TABLE_NAME + " (" + COL_ID + " integer primary key autoincrement, "
-                + COL_NAME + " TEXT, " + COL_INFO + " TEXT, " + COL_ADDR + " TEXT, " + COL_STORENUM + " TEXT, "
-                + COL_INSTT + " TEXT, " + COL_LAT + " TEXT, " + COL_HAR + " TEXT);");
+                + COL_NAME + " TEXT, " + COL_INFO + " TEXT, " + COL_ADDR + " TEXT, " + COL_LENGTH + " TEXT, "
+                + COL_STORENUM + " TEXT, " + COL_INSTT + " TEXT, " + COL_LAT + " TEXT, " + COL_HAR + " TEXT);");
 
-        Log.d("DBHelper", "create table " + TABLE_NAME + " ( " + COL_ID + " integer primary key autoincrement,"
-                + COL_NAME + " TEXT, " + COL_INFO + " TEXT, " + COL_ADDR + " TEXT, " + COL_STORENUM + " TEXT, "
-                + COL_INSTT + " TEXT, " + COL_LAT + " TEXT, " + COL_HAR + " TEXT);");
+        Log.d("DBHelper", "create table " + TABLE_NAME + " (" + COL_ID + " integer primary key autoincrement, "
+                + COL_NAME + " TEXT, " + COL_INFO + " TEXT, " + COL_ADDR + " TEXT, " + COL_LENGTH + " TEXT, "
+                + COL_STORENUM + " TEXT, " + COL_INSTT + " TEXT, " + COL_LAT + " TEXT, " + COL_HAR + " TEXT);");
 
     }
 

@@ -8,6 +8,7 @@ public class TourStreetDto implements Serializable {
     private String name;            // 거리명
     private String streetInfo;      // 거리 정보
     private String address;         // 도로명 주소
+    private String length;          // 총 길이(m)
     private String storeNum;        // 점포 수
     private String institution;     // 관리 기관 명
     private String latitude;        // 위도
@@ -27,6 +28,9 @@ public class TourStreetDto implements Serializable {
 
     public String getAddress() { return address; }
     public void setAddress(String address) { this.address = address; }
+
+    public String getLength() { return length; }
+    public void setLength(String length) { this.length = length; }
 
     public String getStoreNum() { return storeNum; }
     public void setStoreNum(String storeNum) { this.storeNum = storeNum; }

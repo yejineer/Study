@@ -8,7 +8,7 @@ import java.util.ArrayList;
 
 public class TourStreetXmlParser {
     // { stretNm(거리명), stretIntrcn(거리소개), rdnmadr(도로명 주소), storNumber(점포 수), insttNm(제공 기관명)}
-    public enum TagType { NONE, NAME, INFO, ADDR, STORENUM, INSTITUTION, LATITUDE, HARDNESS};
+    public enum TagType { NONE, NAME, INFO, ADDR, LENGTH, STORENUM, INSTITUTION, LATITUDE, HARDNESS};
 
     public TourStreetXmlParser() {
     }
@@ -39,7 +39,9 @@ public class TourStreetXmlParser {
                             if (dto != null) tagType = TagType.INFO;
                         } else if (parser.getName().equals("소재지도로명")) { // rdnmadr
                             if (dto != null) tagType = TagType.ADDR;
-                        } else if (parser.getName().equals("점포수")) { //storNumber
+                        }  else if (parser.getName().equals("총길이")) {
+                            if (dto != null) tagType = TagType.LENGTH;
+                        }  else if (parser.getName().equals("점포수")) { //storNumber
                             if (dto != null) tagType = TagType.STORENUM;
                         } else if (parser.getName().equals("제공기관명")) { //insttNm
                             if (dto != null) tagType = TagType.INSTITUTION;
@@ -65,6 +67,9 @@ public class TourStreetXmlParser {
                                 break;
                             case ADDR:
                                 dto.setAddress(parser.getText());
+                                break;
+                            case LENGTH:
+                                dto.setLength(parser.getText());
                                 break;
                             case STORENUM:
                                 dto.setStoreNum(parser.getText());
@@ -93,4 +98,3 @@ public class TourStreetXmlParser {
 
 
 }
-

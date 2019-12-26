@@ -58,7 +58,8 @@ public class TourStreetAdapter extends BaseAdapter {
             viewHolder = new ViewHolder();
             viewHolder.tvName = view.findViewById(R.id.tvStoreName);
             viewHolder.tvAddress = view.findViewById(R.id.tvStoreAddr);
-            viewHolder.tvStoreNum = view.findViewById(R.id.tvStorePhone);
+            viewHolder.tvStoreNum = view.findViewById(R.id.tvStoreNum);
+            viewHolder.tvLength = view.findViewById(R.id.tvLength);
             view.setTag(viewHolder);
         } else {
             viewHolder = (ViewHolder) view.getTag();
@@ -69,6 +70,7 @@ public class TourStreetAdapter extends BaseAdapter {
         viewHolder.tvName.setText(dto.getName());
         viewHolder.tvAddress.setText(dto.getAddress());
         viewHolder.tvStoreNum.setText("점포수: " + dto.getStoreNum());
+        viewHolder.tvLength.setText("총 길이: " + dto.getLength() + " m");
 
         return view;
     }
@@ -83,5 +85,6 @@ public class TourStreetAdapter extends BaseAdapter {
         public TextView tvName = null;
         public TextView tvAddress = null;
         public TextView tvStoreNum = null;
+        public TextView tvLength = null;
     }
 }
