@@ -1,12 +1,22 @@
 package ddwu.mobile.final_project.ma02_20170964;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.ContentValues;
+import android.content.DialogInterface;
 import android.content.Intent;
-import android.location.Location;
+import android.database.sqlite.SQLiteDatabase;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.ResultReceiver;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -18,6 +28,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -29,6 +40,9 @@ import com.google.android.libraries.places.api.net.FetchPlaceRequest;
 import com.google.android.libraries.places.api.net.FetchPlaceResponse;
 import com.google.android.libraries.places.api.net.PlacesClient;
 
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -47,17 +61,24 @@ public class StreetActivity extends AppCompatActivity implements OnMapReadyCallb
     private TextView tvStreetAddr;
     private TextView tvStreetInfo;
     private GoogleMap mGoogleMap;
+    private MarkerOptions centerMarkerOptions;
     private MarkerOptions markerOptions;
     private Marker centerMarker;
+
+    /* DB */
+    StreetDBHelper helper;
+
     /*DATA*/
+    TourStreetDto dto;
+    RadioButton radioBtn;
+    TourStreetXmlParser parser;
+
     // TODO: Place 클라이언트 객체 선언
     private PlacesClient placesClient;
 
     private LatLngResultReceiver latLngResultReceiver;
-    Location loc;
     LatLng streetLoc;
 
-    TourStreetDto dto;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,6 +102,25 @@ public class StreetActivity extends AppCompatActivity implements OnMapReadyCallb
         // TODO: Places 초기화 및 클라이언트 생성
         Places.initialize(getApplicationContext(), getString(R.string.google_api_key));
         placesClient = Places.createClient(this);
+
+        RadioGroup radioGroup = (RadioGroup) findViewById(R.id.radioGroup_street);
+        radioBtn = (RadioButton) findViewById(R.id.radio_restaurant);
+
+        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                switch (checkedId) {
+                    case R.id.radio_restaurant:
+                        radioBtn = (RadioButton) findViewById(R.id.radio_restaurant);
+                        break;
+                    case R.id.radio_cafe:
+                        radioBtn = (RadioButton) findViewById(R.id.radio_cafe);
+                        break;
+                }
+            }
+        });
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
 
@@ -101,34 +141,37 @@ public class StreetActivity extends AppCompatActivity implements OnMapReadyCallb
             @Override
             public void onInfoWindowClick(final Marker marker) {
                 // TODO: 마커의 InfoWindow 클릭 시 이벤트 처리
-                final String placeId = marker.getTag().toString();    // 마커의 setTag()로 저장한 Place ID 확인
-                List<Place.Field> placeFields = Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.PHONE_NUMBER, Place.Field.ADDRESS);
-                FetchPlaceRequest request = FetchPlaceRequest.builder(placeId, placeFields).build();    // 요청 생성
+                if (marker.getTag() != null) {
+                    Log.d(TAG, "marker: " + marker.getSnippet());
+                    final String placeId = marker.getTag().toString();    // 마커의 setTag()로 저장한 Place ID 확인
+                    List<Place.Field> placeFields = Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.PHONE_NUMBER, Place.Field.ADDRESS);
+                    FetchPlaceRequest request = FetchPlaceRequest.builder(placeId, placeFields).build();    // 요청 생성
 
-                // 요청 처리 및 요청 성공/실패 리스너 지정
-                placesClient.fetchPlace(request).addOnSuccessListener(new OnSuccessListener<FetchPlaceResponse>() {
-                    @Override
-                    public void onSuccess(FetchPlaceResponse fetchPlaceResponse) {
-                        Place place = fetchPlaceResponse.getPlace();
-                        Log.i(TAG, "Place found: " + place.getName());  // 장소 명 확인
-                        Log.i(TAG, "Phone: " + place.getPhoneNumber()); // 전화번호 확인
-                        Log.i(TAG, "Address: " + place.getAddress());   // 주소 확인
-                        Intent intent = new Intent(StreetActivity.this, DetailActivity.class);
-                        intent.putExtra("name", place.getName());
-                        intent.putExtra("phone", place.getPhoneNumber());
-                        intent.putExtra("address", place.getAddress());
-                        startActivity(intent);
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        if (e instanceof ApiException) {
-                            ApiException apiException = (ApiException) e;
-                            int statusCode = apiException.getStatusCode();
-                            Log.e(TAG, "Place not found: " + e.getMessage());
+                    // 요청 처리 및 요청 성공/실패 리스너 지정
+                    placesClient.fetchPlace(request).addOnSuccessListener(new OnSuccessListener<FetchPlaceResponse>() {
+                        @Override
+                        public void onSuccess(FetchPlaceResponse fetchPlaceResponse) {
+                            Place place = fetchPlaceResponse.getPlace();
+                            Log.i(TAG, "Place found: " + place.getName());  // 장소 명 확인
+                            Log.i(TAG, "Phone: " + place.getPhoneNumber()); // 전화번호 확인
+                            Log.i(TAG, "Address: " + place.getAddress());   // 주소 확인
+                            Intent intent = new Intent(StreetActivity.this, DetailActivity.class);
+                            intent.putExtra("name", place.getName());
+                            intent.putExtra("phone", place.getPhoneNumber());
+                            intent.putExtra("address", place.getAddress());
+                            startActivity(intent);
                         }
-                    }
-                });
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            if (e instanceof ApiException) {
+                                ApiException apiException = (ApiException) e;
+                                int statusCode = apiException.getStatusCode();
+                                Log.e(TAG, "Place not found: " + e.getMessage());
+                            }
+                        }
+                    });
+                }
             }
         });
     }
@@ -145,32 +188,35 @@ public class StreetActivity extends AppCompatActivity implements OnMapReadyCallb
         mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(streetLoc, 17));
 //            mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLoc, 17));
 
-        markerOptions = new MarkerOptions();
-        markerOptions.position(streetLoc);
-//        mGeoDataClient = Places.getGeoDataClient(MainActivity.this);
-        centerMarker = mGoogleMap.addMarker(markerOptions);
-
         // 마커 정보 지정
-        markerOptions= new MarkerOptions();
-        markerOptions.position(streetLoc);
-        markerOptions.title(dto.getName());
-        markerOptions.snippet("총 길이: " + dto.getLength() + " m");
+        centerMarkerOptions= new MarkerOptions();
+        centerMarkerOptions.position(streetLoc);
+        centerMarkerOptions.title(dto.getName());
+        centerMarkerOptions.icon(BitmapDescriptorFactory.defaultMarker(200f));
+        centerMarkerOptions.snippet("총 길이: " + dto.getLength() + " m");
 
         // 지도에 마커 추가 후 추가한 마커 정보 기록
-        centerMarker = mGoogleMap.addMarker(markerOptions);
-        centerMarker.showInfoWindow();
+        centerMarker = mGoogleMap.addMarker(centerMarkerOptions);
     }
 
     public void onClick(View v) {
         switch(v.getId()) {
             case R.id.btnSearch:
                 mGoogleMap.clear();
+                settingMap();
+                String type;
+                if (radioBtn.getId() == R.id.radio_restaurant) {
+                    type = "restaurant";
+                } else {
+                    type = "cafe";
+                }
+
                 // TODO: 장소 정보 요청
                 new NRPlaces.Builder().listener(placesListener)
                         .key(getString(R.string.google_api_key))
-                        .latlng(loc.getLatitude(), loc.getLongitude())
+                        .latlng(streetLoc.latitude, streetLoc.longitude)
                         .radius(500)
-                        .type("cafe")
+                        .type(type)
                         .language("ko", "KR")
                         .build()
                         .execute();
@@ -195,9 +241,22 @@ public class StreetActivity extends AppCompatActivity implements OnMapReadyCallb
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
+                    markerOptions = new MarkerOptions();
                     for (noman.googleplaces.Place place : places) {
                         markerOptions.title(place.getName());
+                        markerOptions.snippet("위도: " + place.getLatitude() + " 경도: " + place.getLongitude());
                         markerOptions.position(new LatLng(place.getLatitude(), place.getLongitude()));
+                        /* 마커의 icon 커스텀 */
+                        Drawable drawble;
+                        if (radioBtn.getId() == R.id.radio_restaurant) {
+                            drawble = getResources().getDrawable(R.drawable.ic_local_restaurant_orange);
+                            Log.d(TAG, "drawble 지정 됨: 식당");
+                        } else {
+                            drawble = getResources().getDrawable(R.drawable.ic_local_cafe_yellow);
+                            Log.d(TAG, "drawble 지정 됨: 카페");
+                        }
+                        markerOptions.icon(BitmapDescriptorFactory.fromBitmap(((BitmapDrawable)drawble).getBitmap()));
+
                         Marker newMarker = mGoogleMap.addMarker(markerOptions);
                         newMarker.setTag(place.getPlaceId());   // Marker의 setTag()를 사용하여 Place ID를 보관
                         Log.d(TAG, "placeID: " + place.getPlaceId());
@@ -241,7 +300,6 @@ public class StreetActivity extends AppCompatActivity implements OnMapReadyCallb
                 } else {
                     LatLng latlng = latLngList.get(0);
                     streetLoc = new LatLng(latlng.latitude, latlng.longitude);
-                    Log.d(TAG, String.valueOf(latlng.latitude) + String.valueOf(latlng.longitude));
                     settingMap();
                 }
             } else {
@@ -249,5 +307,88 @@ public class StreetActivity extends AppCompatActivity implements OnMapReadyCallb
             }
         }
     }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                onBackPressed();
+                return true;
+            case R.id.menu_scrapbook:
+//                Intent intent_add = new Intent(this, AddActivity.class);
+//                startActivityForResult(intent_add, ADD_CODE);
+                break;
+            case R.id.menu_update:
+                final AlertDialog.Builder builder = new AlertDialog.Builder(StreetActivity.this);
+                builder.setTitle("데이터 업데이트");
+                builder.setMessage("데이터를 업데이트하시겠습니까?");
+                builder.setIcon(R.mipmap.ic_update);
+                builder.setPositiveButton("받아오기", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        getData_insertDB();
+                    }
+                });
+                builder.setNegativeButton("취소", null);
+                builder.setCancelable(false);
+                Dialog dlg = builder.create(); //대화 상자 생성, 표시 X
+                dlg.setCanceledOnTouchOutside(false);
+                dlg.show();
+                break;
+            case R.id.menu_quit:
+                AlertDialog.Builder builder2 = new AlertDialog.Builder(StreetActivity.this);
+                builder2.setTitle("앱 종료")
+                .setIcon(R.mipmap.question)
+                .setMessage("앱을 종료하시겠습니까?")
+                .setPositiveButton("종료", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        finish();
+                    }
+                })
+                .setNegativeButton("취소", null)
+                .show();
+                Dialog dlg2 = builder2.create(); //대화 상자 생성, 표시 X
+                dlg2.setCanceledOnTouchOutside(false);
+                dlg2.show();
+                break;
+        }
+        return true;
+    }
+
+    public void getData_insertDB() {
+        /* 내부 xml파일 파싱해서 resultList로 받아오고, 리스트뷰에 출력 */
+        InputStream inputStream = getResources().openRawResource(R.raw.tour_street);
+        InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
+        BufferedReader reader = new BufferedReader(inputStreamReader);
+        /* DB 저장 코드 */
+        insertDB(parser.parse(reader));
+    }
+
+    public void insertDB(ArrayList<TourStreetDto> list) {
+        //			DB 데이터 삽입 작업 수행
+        SQLiteDatabase db = helper.getWritableDatabase();
+        db.delete(StreetDBHelper.TABLE_NAME, null, null); // 안하면 insert문 계속 쌓임
+        for (TourStreetDto dto : list) {
+            ContentValues row = new ContentValues();
+            row.put(StreetDBHelper.COL_NAME, dto.getName());
+            row.put(StreetDBHelper.COL_INFO, dto.getStreetInfo());
+            row.put(StreetDBHelper.COL_ADDR, dto.getAddress());
+            row.put(StreetDBHelper.COL_LENGTH, dto.getLength());
+            row.put(StreetDBHelper.COL_STORENUM, dto.getStoreNum());
+            row.put(StreetDBHelper.COL_INSTT, dto.getInstitution());
+            row.put(StreetDBHelper.COL_LAT, dto.getLatitude());
+            row.put(StreetDBHelper.COL_HAR, dto.getHardness());
+
+            db.insert(StreetDBHelper.TABLE_NAME, null, row);
+
+        }
+        helper.close();
+
+    }
 }

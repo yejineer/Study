@@ -6,8 +6,10 @@ import androidx.core.app.ActivityCompat;
 
 import android.Manifest;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -17,6 +19,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.EditText;
@@ -34,7 +38,7 @@ public class MainActivity extends AppCompatActivity {
 
     public static final String TAG = "MainActivity";
     final static int PERMISSION_REQ_CODE = 100;
-
+    public static Context context;
     EditText etTarget;
     ListView lvList;
     public SharedPreferences prefs; // 앱 설치 후 최초 실행 한 것인지 확인 위해
@@ -50,12 +54,12 @@ public class MainActivity extends AppCompatActivity {
 
     RadioButton radioButton;
 
-    ProgressDialog progressDlg;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        context = this;
 
         checkPermission();
 
@@ -118,7 +122,11 @@ public class MainActivity extends AppCompatActivity {
                     getData_insertDB();
                 }
             });
-            builder.show();
+            builder.setCancelable(false);
+
+            Dialog dlg = builder.create(); //대화 상자 생성, 표시 X
+            dlg.setCanceledOnTouchOutside(false);
+            dlg.show();
         }
     }
 
@@ -138,7 +146,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void getData_insertDB() {
+    public void getData_insertDB() {
         /* 내부 xml파일 파싱해서 resultList로 받아오고, 리스트뷰에 출력 */
         InputStream inputStream = getResources().openRawResource(R.raw.tour_street);
         InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
@@ -149,7 +157,6 @@ public class MainActivity extends AppCompatActivity {
 
         /* DB 저장 코드 */
         insertDB(parser.parse(reader));
-        Log.i(TAG, "앱 설치 후 최초 db저장");
     }
 
     private void searchStreets(String keyword, RadioButton radioButton) {
@@ -205,6 +212,57 @@ public class MainActivity extends AppCompatActivity {
         }
         helper.close();
 
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.menu_scrapbook:
+//                Intent intent_add = new Intent(this, AddActivity.class);
+//                startActivityForResult(intent_add, ADD_CODE);
+                break;
+            case R.id.menu_update:
+                final AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                builder.setTitle("데이터 업데이트");
+                builder.setMessage("데이터를 업데이트하시겠습니까?");
+                builder.setIcon(R.mipmap.ic_update);
+                builder.setPositiveButton("받아오기", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        getData_insertDB();
+                    }
+                });
+                builder.setNegativeButton("취소", null);
+                builder.setCancelable(false);
+                Dialog dlg = builder.create(); //대화 상자 생성, 표시 X
+                dlg.setCanceledOnTouchOutside(false);
+                dlg.show();
+                break;
+            case R.id.menu_quit:
+                AlertDialog.Builder builder2 = new AlertDialog.Builder(MainActivity.this);
+                builder2.setTitle("앱 종료");
+                builder2.setIcon(R.mipmap.question);
+                builder2.setMessage("앱을 종료하시겠습니까?");
+                builder2.setPositiveButton("종료", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        finish();
+                    }
+                });
+                builder2.setNegativeButton("취소", null);
+                builder2.show();
+                Dialog dlg2 = builder2.create(); //대화 상자 생성, 표시 X
+                dlg2.setCanceledOnTouchOutside(false);
+                dlg2.show();
+                break;
+        }
+        return true;
     }
 
     /* 필요 permission 요청 */

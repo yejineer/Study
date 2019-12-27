@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">전국거리자랑</string>
+    <string name="app_name">어떤거리</string>
     <string name="api_url_street">http://api.data.go.kr/openapi/area-spcliz-stret-std?serviceKey=</string>
     <string name="key_data">wc%2F2o39muTYtrjNvN8iQKjh0B5vjk9cT6%2FvTsFxe08yHCJd07fQKJFVMJFE1SYG2mXjBmdGXDluQlhxuLYtamg%3D%3D</string>
     <string name="key_seoul">4a4f637a47796a793734494b4e495a</string>
@@ -10,4 +10,5 @@
     <string name="no_address_found">주소를 찾을 수 없습니다.</string>
     <string name="address_found">주소를 찾았습니다.</string>
     <string name="no_geocoder_available">사용가능한 Geocoder가 없습니다.</string>
+    <string name="radio_check">검색 시 옵션 선택 필수</string>
 </resources>

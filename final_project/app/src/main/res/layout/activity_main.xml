@@ -35,9 +35,22 @@
         android:layout_height="wrap_content"
         android:background="#FFFFFF">
 
+        <TextView
+            android:id="@+id/tvNotify"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="false"
+            android:layout_centerInParent="false"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="75dp"
+            android:layout_toRightOf="@id/radioGroup"
+            android:layout_weight="1"
+            android:text="@string/radio_check"
+            android:textSize="14sp" />
+
         <RadioGroup
             android:id="@+id/radioGroup"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
@@ -53,10 +66,11 @@
                 android:id="@+id/radio_area"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
+                android:layout_marginLeft="30dp"
                 android:layout_toRightOf="@id/radio_keyword"
                 android:checked="false"
                 android:text="지역" />
+
         </RadioGroup>
 
     </RelativeLayout>
