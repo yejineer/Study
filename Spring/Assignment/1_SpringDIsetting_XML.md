@@ -190,8 +190,7 @@ public class Singer implements Performer {
 Chris is singing a song "Bohemian Rhapsody" by "Queen".  
 \-----------------------  
 <Performance #5>  
-Jain is singing a song "Bohemian Rhapsody" by "Queen".  
-\-----------------------   
+Jain is singing a song "Bohemian Rhapsody" by "Queen".   
   
 ## 5번
 ### ⑴ Encore.java (추가된 클래스) 
@@ -240,10 +239,12 @@ public class SpringIdolMain {
 }
 ```
 #### [실행 결과] 
-#### ex1) kenny가 앵콜 공연 할 때
-<Encore Performance>  
-Playing Jingle Bells : STRUM STRUM STRUM~~  
+#### ex1) kenny가 앵콜 공연 할 때   
+\-----------------------  
+\<Encore Performance>  
+Playing Jingle Bells : STRUM STRUM STRUM~~   
  
 #### ex2) Jain이 앵콜 공연 할 때
-<Encore Performance>  
+\-----------------------  
+\<Encore Performance>  
 Jain is singing a song "Bohemian Rhapsody" by "Queen".  
