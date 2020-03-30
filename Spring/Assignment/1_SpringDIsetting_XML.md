@@ -1,18 +1,18 @@
 # 실습 1: XML 기반 Spring DI 설정
-# 1.
-### [수정 코드]
+## 1번
+#### [수정 코드]
 ```xml
 <bean id="kenny" class="com.example.springidol.Instrumentalist">
 	<property name="song" value="Jingle Bells" />
 	<property name="instrument" ref="guitar" />
 </bean>
 ```
-### [실행 결과]
-Performance #2
-Playing Jingle Bells : STRUM STRUM STRUM~~
-
-# 2.
-### [수정 코드]
+#### [실행 결과]
+<Performance #2>  
+Playing Jingle Bells : STRUM STRUM STRUM~~  
+  
+## 2번
+#### [수정 코드]
 ```xml
 <bean id="duke" class="com.example.springidol.PoeticJuggler"
 	c:poem-ref="sonnet29" />
@@ -21,10 +21,12 @@ Playing Jingle Bells : STRUM STRUM STRUM~~
 	p:song="Jingle Bells"
 	p:instrument-ref="guitar" />
 ```
-
-# 3.
-## OneManBand.java
-### 원본
+#### [실행 결과]
+변화 없음   
+  
+## 3번
+### ⑴ OneManBand.java
+#### [원본 코드]
 ```java
 import java.util.Properties;
 
@@ -47,21 +49,21 @@ public class OneManBand implements Performer {
   }
 }
 ```
-### 수정
+#### [수정 코드]
 ```java
-import java.util.Map;
+import java.util.Map; // Map util을 import
 
 public class OneManBand implements Performer {
   public OneManBand() {
   }
 
-  private Map<String, Instrument> instruments;
+  private Map<String, Instrument> instruments; // Properties타입에서 수정
   public void setInstruments(Map<String, Instrument> instruments) {
   	this.instruments = instruments;
   }
 
   @Override
-  public void perform() throws PerformanceException {
+  public void perform() throws PerformanceException { //perform() method도 알맞게 수정
   	for (String key : instruments.keySet()) {
 	    Instrument instrument = instruments.get(key);
 	    instrument.play();
@@ -69,8 +71,8 @@ public class OneManBand implements Performer {
   }	
 }
 ```
-## spring-idol.xml
-### 원본
+### ⑵ spring-idol.xml
+#### [원본 코드]
 ```xml
 <bean id="hank" class="com.example.springidol.OneManBand">
 	<property name="instruments">
@@ -82,7 +84,7 @@ public class OneManBand implements Performer {
 	</property>
 </bean>
 ```
-### 수정
+#### [수정 코드]
 ```xml
 <bean id="hank" class="com.example.springidol.OneManBand">
 	<property name="instruments">
@@ -94,20 +96,20 @@ public class OneManBand implements Performer {
 	</property>
 </bean>
 ```
-## 실행 결과
-Performance #3
-HUM HUM HUM~~
-CRASH CRASH CRASH~~
-TOOT TOOT TOOT~~
-
-# 4
-## Song.java
+### [실행 결과]
+<Performance #3>  
+HUM HUM HUM~~  
+CRASH CRASH CRASH~~  
+TOOT TOOT TOOT~~  
+  
+## 4번
+### ⑴ Song.java (추가된 클래스)
 ```java
 package com.example.springidol;
 
 public class Song {
-  private String title;
-  private String artist;
+  private String title;  // 제목
+  private String artist; // 원곡자
 	
   public Song() {
   }
@@ -128,15 +130,15 @@ public class Song {
 }
 
 ```
-## Singer.java
+### ⑵ Singer.java (추가된 클래스)
 ```java
 package com.example.springidol;
 
 public class Singer implements Performer {
-  private String name;
-  private Song song;
+  private String name;	// 이름
+  private Song song;	// 곡 정보
 	
-  public Singer(String name, Song song) {
+  public Singer(String name, Song song) { //생성자를 이용한 DI 설정 위해
 	  this.name = name;
 	  this.song = song;
   }
@@ -147,7 +149,8 @@ public class Singer implements Performer {
   }
 }
 ```
-## spring-idol.xml
+### ⑶ spring-idol.xml
+#### [수정 코드]
 ```xml
 <!-- performers에 두 명의 가수 singerA와 singerB를 경연에 참가시킨다. -->
 <bean id="springIdol" class="com.example.springidol.SpringIdol">
@@ -161,11 +164,13 @@ public class Singer implements Performer {
 		</list>
 	</property>
 </bean>
-
+```
+#### [추가 코드]
+```xml
 <!-- 두 개의 곡 bean을 생성한다. -->
 <bean id="song1" class="com.example.springidol.Song"
 	p:title="Bohemian Rhapsody"
-	p:artist="Queen"/>
+	p:artist="Queen"/> <!-- "p"namespace를 이용한 property설정 -->
 <bean id="song2" class="com.example.springidol.Song">
 	<property name="title" value="Square"/>
 	<property name="artist" value="Yerin Baek"/>
@@ -181,9 +186,9 @@ public class Singer implements Performer {
 ```
 ## 실행 결과
 \-----------------------  
-Performance #4  
+<Performance #4>  
 Chris is singing a song "Bohemian Rhapsody" by "Queen".  
 \-----------------------  
-Performance #5  
+<Performance #5>  
 Jain is singing a song "Bohemian Rhapsody" by "Queen".  
 \-----------------------  
