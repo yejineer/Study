@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+						http://www.springframework.org/schema/beans/spring-beans.xsd
+						http://www.springframework.org/schema/util 
+						http://www.springframework.org/schema/util/spring-util.xsd">
+
+	<!-- ==================================================================== -->
+	<!-- Spring Idol talent competition class -->
+	<!-- ==================================================================== -->
+	<bean id="springIdol" class="com.example.springidol.SpringIdol">
+		<property name="performers">
+			<list>
+				<ref bean="duke" />
+				<ref bean="kenny" />
+				<ref bean="hank" />
+				<ref bean="chris" />
+				<ref bean="jain" />
+			</list>
+		</property>
+	</bean>
+
+	<!-- ==================================================================== -->
+	<!-- Performers -->
+	<!-- ==================================================================== -->
+
+	<bean id="duke" class="com.example.springidol.PoeticJuggler">
+		<constructor-arg ref="sonnet29" />
+	</bean>
+
+	<bean id="kenny" class="com.example.springidol.Instrumentalist">
+		<property name="song" value="Jingle Bells" />
+		<property name="instrument" ref="guitar" />
+	</bean>
+
+	<bean id="hank" class="com.example.springidol.OneManBand">
+		<property name="instruments" ref="instruments_of_hank" />
+	</bean>
+
+	<bean id="chris" class="com.example.springidol.Singer">
+        <constructor-arg value="Chris Kim" />
+        <constructor-arg ref="bohemian" />
+	</bean>
+	
+	<bean id="jain" class="com.example.springidol.Singer">
+		<constructor-arg value="Jain Lee" />
+		<constructor-arg value="#{chris.song}" />
+	</bean>
+	
+	<!-- ==================================================================== -->
+	<!-- Instruments performers can use -->
+	<!-- ==================================================================== -->
+	<bean id="harmonica" class="com.example.springidol.Harmonica" />
+	<bean id="cymbal" class="com.example.springidol.Cymbal" />
+	<bean id="guitar" class="com.example.springidol.Guitar" />
+	<bean id="saxophone" class="com.example.springidol.Saxophone" />
+	<bean id="piano" class="com.example.springidol.Piano" />
+		
+	<util:properties id="instruments_of_hank">
+		<prop key="GUITAR">STRUM STRUM STRUM</prop>
+		<prop key="CYMBAL">CRASH CRASH CRASH</prop>
+		<prop key="HARMONICA">HUM HUM HUM</prop>
+	</util:properties>
+		
+	<bean id="sonnet29" class="com.example.springidol.Sonnet29" />
+	
+	<!-- 실습 #1의  Singer, Song, Encore bean -->
+	<bean id="bohemian" class="com.example.springidol.Song"
+		p:title="Bohemian Rhapsody" p:artist="Queen" />
+ 		
+ 	<bean id="hero" class="com.example.springidol.Song"
+		p:title="Hero" p:artist="Mariah Carey" />           	
+	
+	<bean id="encore" class="com.example.springidol.Encore">
+		<property name="performer"
+			value="#{springIdol.performers[T(java.lang.Math).random()*springIdol.performers.length]}" />
+	</bean>	
+
+</beans>
