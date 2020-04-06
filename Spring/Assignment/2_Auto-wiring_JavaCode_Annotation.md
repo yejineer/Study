@@ -341,3 +341,180 @@ public class SpringConf2 {
 	}
 }
 ```
+
+## 3
+### com.example.springidol.annotation 패키지 내의 클래스들 수정 
+#### Cymbal.java
+```java
+@Component // "cymbal" bean 생성
+@Qualifier("forHank")
+public class Cymbal implements Instrument {
+```
+#### Encore.java
+```java
+@Component // "encore" bean 생성
+public class Encore {
+	private Performer encorePerformer;
+
+	@Value("#{springIdol.performers[T(java.lang.Math).random()*springIdol.performers.length]}")
+	public void setPerformer(Performer p) {
+		this.encorePerformer = p;
+	}
+```
+#### Guitar.java
+```java
+@Component // "guitar" bean 생성
+public class Guitar implements Instrument {
+```
+#### Harmonica.java
+```java
+@Component // "harmonica" bean 생성
+@Qualifier("forHank")
+public class Harmonica implements Instrument {
+```
+#### Instrumentalist.java
+```java
+@Component("kenny") // "kenny" bean 생성
+public class Instrumentalist implements Performer {
+	public Instrumentalist() {
+	}
+
+	@Value("Jingle Bells")
+	private String song;
+
+	public void setSong(String song) {
+		this.song = song;
+	}
+
+	@Autowired
+	@Qualifier("guitar")
+//	@Resource(name="guitar")
+	private Instrument instrument;
+```
+#### OneManBand.java
+```java
+@Component("hank") //"hank" bean 생성
+public class OneManBand implements Performer {
+  public OneManBand() {}
+  
+  @Autowired
+  @Qualifier("forHank")
+  private Collection<Instrument> instruments;
+```
+#### Piano.java
+```java
+@Component // "piano" bean 생성
+public class Piano implements Instrument {
+```
+#### PoeticJuggler.java
+```java
+@Component("duke") // "duke" bean 생성
+public class PoeticJuggler extends Juggler {
+	private Poem poem;
+
+	public PoeticJuggler() { }
+	
+	public PoeticJuggler(Poem poem) {
+		super();
+		this.poem = poem;
+	}
+
+	@Autowired
+	public PoeticJuggler(@Value("3")int beanBags, @Qualifier("sonnet29")Poem poem) {
+		super(beanBags);
+		this.poem = poem;
+	}
+```
+#### Saxophone.java
+```java
+@Component // "saxophone" bean 생성
+@Qualifier("forHank")
+public class Saxophone implements Instrument {
+```
+#### Singer.java
+```java
+@Component("chris") // "chris" bean 생성
+public class Singer implements Performer {
+	
+	private String myName;
+	private Song mySong;
+
+	public Singer() {
+	}
+
+	@Autowired // 생성자에 annotation을 설정 시 XML설정의 우선순위가 높음 
+	public Singer(@Value("Chris Kim")String name, @Qualifier("bohemian")Song song) {
+		this.myName = name;
+		this.mySong = song;
+	}
+```
+#### Song.java
+```java
+@Component("bohemian") // "bohemian" bean 생성
+public class Song {	
+	private String title;
+	private String artist;
+
+	public Song() {
+	}
+
+	//setter 이용해 DI 설정 시 xml우선순위가 더 높으므로 두 객체 생성 가능
+	@Value("Bohemian Rhapsody")
+	public void setTitle(String title) { this.title = title; }
+	public String getTitle() { return title; }
+
+	@Value("Queen")
+	public void setArtist(String artist) { this.artist = artist; }
+```
+#### Sonnet29.java
+```java
+@Component // "sonnet29" bean 생성
+public class Sonnet29 implements Poem {
+```
+#### SpringIdol.java
+```java
+@Component // "springIdol" bean 생성
+public class SpringIdol implements TalentCompetition {
+	private Performer[] performers;
+
+	public SpringIdol() {
+	}
+	
+	public Performer[] getPerformers() {
+		return performers;
+	}
+
+	@Autowired
+	public void setPerformers(Performer[] performers) {
+		this.performers = performers;
+	}
+```
+### spring-idol-annotation.xml
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+			http://www.springframework.org/schema/beans/spring-beans.xsd
+			http://www.springframework.org/schema/util 
+			http://www.springframework.org/schema/util/spring-util.xsd
+			http://www.springframework.org/schema/context
+						http://www.springframework.org/schema/context/spring-context.xsd">
+
+	<context:component-scan base-package="com.example.springidol.annotation"/>
+	<!-- 같은 Singer타입 객체 두 개를 만들기 위해 
+		한 명은 @Component로 생성하고, 다른 한 명은 xml로 설정  -->
+	<bean id="jain" class="com.example.springidol.annotation.Singer">
+		<constructor-arg value="Jain Lee" />
+		<constructor-arg value="#{chris.song}" />
+	</bean>
+
+ 	<!-- 같은 Song타입 객체 두 개를 만들기 위해 
+		첫 곡은 @Component로 생성하고, 두번째 곡은 xml로 설정-->	
+ 	<bean id="hero" class="com.example.springidol.annotation.Song"
+		p:title="Hero" p:artist="Mariah Carey" />
+</beans>
+```
