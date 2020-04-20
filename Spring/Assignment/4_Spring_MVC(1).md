@@ -58,8 +58,15 @@ duke.name=Duke
 - Message.java
 - HelloService.java
 - helloIdol.jsp
-
   
+### (3) 실행 결과
+- /hello.do/kenny 요청 시   
+  ![image](https://user-images.githubusercontent.com/50271884/79748580-a78ad900-8348-11ea-8133-cd6f9a0cca8f.png)  
+    
+- /hello.do/chris 요청 시  
+  ![image](https://user-images.githubusercontent.com/50271884/79748650-c12c2080-8348-11ea-999c-e9a50d5da757.png)  
+   
+     
 ## 2번
 ### (1) 수정한 파일
 #### ⓐ Instrumentalist.java
@@ -171,3 +178,11 @@ public String recite() {
 
 ### (2) 추가한 파일  (파일로 첨부)
 - perform.jsp
+  
+### (3) 실행 결과
+- /perform/kenny 요청 시   
+  ![image](https://user-images.githubusercontent.com/50271884/79748746-e325a300-8348-11ea-8a9a-7820c7fe517d.png)    
+    
+- /perform/chris 요청 시  
+  ![image](https://user-images.githubusercontent.com/50271884/79748780-f46eaf80-8348-11ea-97c6-2052146fa108.png)  
+   
