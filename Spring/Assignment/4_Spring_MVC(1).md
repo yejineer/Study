@@ -53,9 +53,121 @@ duke.name=Duke
 ```xml
 <context:component-scan base-package="com.example.springidol, com.example.helloworld.service" />
 ```
-
+  
 ### (2) 추가한 파일 (파일로 첨부)
 - Message.java
 - HelloService.java
 - helloIdol.jsp
 
+  
+## 2번
+### (1) 수정한 파일
+#### ⓐ Instrumentalist.java
+```java
+// 공연자 클래스의 perform() 메소드에서 공연 결과를 문자열로 반환하도록 수정
+public String perform() throws PerformanceException {
+	return "Playing " + song + " : " + instrument.play();
+}
+```
+#### ⓑ Juggler.java
+```java
+// 공연자 클래스의 perform() 메소드에서 공연 결과를 문자열로 반환하도록 수정
+public String perform() throws PerformanceException {
+	return "JUGGLING " + beanBags + " BEANBAGS";
+}
+```
+#### ⓒ OneManBand.java
+```java
+// 공연자 클래스의 perform() 메소드에서 공연 결과를 문자열로 반환하도록 수정
+public String perform() throws PerformanceException {
+	String s = "";
+	for (Instrument instrument : instruments) {
+		s += instrument.play();
+		s += "<br>";
+	}
+	return s;
+}
+```
+#### ⓓ Performer.java (인터페이스)
+```java
+// 공연자 클래스의 perform() 메소드에서 공연 결과를 문자열로 반환하도록 수정
+public String perform() throws PerformanceException;
+```
+#### ⓔ PoeticJuggler.java
+```java
+// 공연자 클래스의 perform() 메소드에서 공연 결과를 문자열로 반환하도록 수정
+public String perform() throws PerformanceException {
+	super.perform();
+	return "While reciting..." + poem.recite();
+}
+```
+#### ⓕ Singer.java
+```java
+// 공연자 클래스의 perform() 메소드에서 공연 결과를 문자열로 반환하도록 수정
+@Override
+public String perform() throws PerformanceException {
+	return name + " is singing a song \"" + song.getTitle() + "\""+ " by " + song.getArtist();
+}
+```
+#### ⓖ Cymbal.java
+```java
+//console에 출력하는 대신 문자열로 반환하도록 수정
+public String play() {
+	return "CRASH CRASH CRASH";
+}
+```
+#### ⓗ Guitar.java
+```java
+//console에 출력하는 대신 문자열로 반환하도록 수정
+public String play() {
+	return "STRUM STRUM STRUM";
+}
+```
+#### ⓘ Harmonica.java
+```java
+//console에 출력하는 대신 문자열로 반환하도록 수정
+public String play() {
+	return "HUM HUM HUM";
+}
+```
+#### ⓙ Instrument.java (인터페이스)
+```java
+//console에 출력하는 대신 문자열로 반환하도록 수정
+public String play();
+```
+#### ⓚ Piano.java
+```java
+//console에 출력하는 대신 문자열로 반환하도록 수정
+public String play() {
+	return "PLINK PLINK PLINK";
+}
+```
+#### ⓛ Poem.java (인터페이스)
+```java
+//console에 출력하는 대신 문자열로 반환하도록 수정
+public String recite();
+```
+#### ⓜ Saxophone.java
+```java
+//console에 출력하는 대신 문자열로 반환하도록 수정
+public String play() {
+	return sound;
+}
+```
+#### ⓝ Sonnet29.java
+```java
+//console에 출력하는 대신 문자열로 반환하도록 수정
+public String recite() {
+	String s = "<br>";
+	for (int i = 0; i < LINES.length; i++) {
+		s += LINES[i];
+		s += "<br>";
+	}
+	return s;
+}
+```
+#### ⓞ HelloController.java 확장
+- 파일로 첨부
+
+### (2) 추가한 파일  (파일로 첨부)
+- perform.jsp
