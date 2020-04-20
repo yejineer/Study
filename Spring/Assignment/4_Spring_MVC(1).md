@@ -54,10 +54,21 @@ duke.name=Duke
 <context:component-scan base-package="com.example.springidol, com.example.helloworld.service" />
 ```
   
-### (2) 추가한 파일 (파일로 첨부)
-- Message.java
-- HelloService.java
-- helloIdol.jsp
+### (2) 추가한 파일 
+- Message.java (파일로 첨부)  
+- HelloService.java (파일로 첨부)  
+- helloIdol.jsp  
+```jsp
+<%@ page contentType="text/html; charset=utf-8"%>
+<html>
+<head>
+	<title>Hello</title>
+</head>
+<body>
+	<h2>인사말: <b>${message.greeting} I'm ${message.name}.</b></h2>
+</body>
+</html>
+```
   
 ### (3) 실행 결과
 - /hello.do/kenny 요청 시   
@@ -176,8 +187,19 @@ public String recite() {
 #### ⓞ HelloController.java 확장
 - 파일로 첨부
 
-### (2) 추가한 파일  (파일로 첨부)
-- perform.jsp
+### (2) 추가한 파일 
+- perform.jsp  
+```jsp
+<%@ page contentType="text/html; charset=utf-8"%>
+<html>
+<head>
+	<title>Perform</title>
+</head>
+<body>
+	<h2><b>${performer.perform()}</b></h2>
+</body>
+</html>
+```
   
 ### (3) 실행 결과
 - /perform/kenny 요청 시   
