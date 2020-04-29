@@ -11,7 +11,7 @@
         android:id="@+id/map"
         android:name="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="380dp"
-        android:layout_height="450dp"
+        android:layout_height="380dp"
         android:layout_marginStart="15dp"
         android:layout_marginLeft="15dp"
         android:layout_marginTop="20dp"
@@ -31,7 +31,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginLeft="16dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="12dp"
         android:text="거리이름"
         android:textColor="#3C89CF"
         android:textSize="20sp"
@@ -143,7 +143,7 @@
             android:id="@+id/radioGroup_street"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="15dp"
+            android:layout_marginLeft="15dp"
             android:layout_weight="1.5"
             android:clipToPadding="false"
             android:orientation="horizontal">
@@ -169,10 +169,22 @@
             android:id="@+id/btnSearch"
             android:layout_width="wrap_content"
             android:layout_height="40dp"
-            android:layout_marginEnd="15dp"
+            android:layout_marginRight="15dp"
             android:layout_weight="0.2"
             android:onClick="onClick"
             android:text="주변 검색" />
     </LinearLayout>
+
+    <Button
+        android:id="@+id/btnFavorite"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginRight="20dp"
+        android:background="@drawable/favorite"
+        android:tag="border"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

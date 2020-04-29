@@ -37,16 +37,17 @@
 
         <TextView
             android:id="@+id/tvNotify"
-            android:layout_width="wrap_content"
+            android:layout_width="141dp"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="false"
-            android:layout_centerInParent="false"
+            android:layout_centerHorizontal="false"
             android:layout_centerVertical="true"
-            android:layout_marginLeft="75dp"
+            android:layout_marginLeft="95dp"
             android:layout_toRightOf="@id/radioGroup"
             android:layout_weight="1"
             android:text="@string/radio_check"
-            android:textSize="14sp" />
+            android:textColor="#3C89CF"
+            android:textSize="12sp" />
 
         <RadioGroup
             android:id="@+id/radioGroup"
@@ -82,7 +83,7 @@
         android:layout_margin="3dp"
         android:background="#FFFFFF"
         android:cacheColorHint="#00D5D5D5"
-        android:divider="@color/colorAccent"
+        android:divider="#3C89CF"
         android:dividerHeight="0.5dp" />
 
 </LinearLayout>

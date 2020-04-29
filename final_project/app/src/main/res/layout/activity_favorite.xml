@@ -1,22 +1,99 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
     <TextView
-        android:id="@+id/tvScrap"
+        android:id="@+id/tvFavorite"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="12dp"
         android:layout_marginLeft="12dp"
         android:layout_marginTop="10dp"
-        android:text="TextView"
+        android:text="@string/scrap"
         android:textColor="#3C89CF"
         android:textSize="18sp"
-        android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-</androidx.constraintlayout.widget.ConstraintLayout>
+        android:textStyle="bold" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="#FFFFFF"
+        android:orientation="horizontal">
+
+        <EditText
+            android:id="@+id/etTarget_favorite"
+            android:layout_width="320dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:layout_weight="1.5"
+            android:ems="10"
+            android:hint="@string/hint_keyword"
+            android:inputType="textPersonName" />
+
+        <Button
+            android:id="@+id/btnSearch_favorite"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:onClick="onClick"
+            android:text="검색" />
+
+    </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#FFFFFF">
+
+        <TextView
+            android:id="@+id/tvNotify_favorite"
+            android:layout_width="141dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerInParent="true"
+            android:layout_centerHorizontal="false"
+            android:layout_weight="1"
+            android:text="@string/radio_check"
+            android:textColor="#3C89CF"
+            android:textSize="12sp" />
+
+        <RadioGroup
+            android:id="@+id/radioGroup_favorite"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <RadioButton
+                android:id="@+id/radio_keyword_favorite"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:checked="true"
+                android:text="키워드" />
+
+            <RadioButton
+                android:id="@+id/radio_area_favorite"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="30dp"
+                android:layout_toRightOf="@id/radio_keyword"
+                android:checked="false"
+                android:text="지역" />
+
+        </RadioGroup>
+
+    </RelativeLayout>
+
+    <ListView
+        android:id="@+id/lvList_favorite"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="3dp"
+        android:background="#FFFFFF"
+        android:cacheColorHint="#00D5D5D5"
+        android:divider="#3C89CF"
+        android:dividerHeight="0.5dp" />
+
+</LinearLayout>

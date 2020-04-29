@@ -7,7 +7,6 @@ import androidx.core.app.ActivityCompat;
 import android.Manifest;
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.app.ProgressDialog;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -45,7 +44,6 @@ public class MainActivity extends AppCompatActivity {
 
     // data
     TourStreetAdapter adapter;
-    ArrayList<TourStreetDto> resultList;
     TourStreetXmlParser parser;
 
     // DB
@@ -67,22 +65,28 @@ public class MainActivity extends AppCompatActivity {
         lvList = findViewById(R.id.lvList);
         prefs = getSharedPreferences("Pref", MODE_PRIVATE);
 
-        resultList = new ArrayList();
         helper = new StreetDBHelper(this);
         parser = new TourStreetXmlParser();
-        adapter = new TourStreetAdapter(this, R.layout.listview_tourstreet, resultList);
-
+        adapter = new TourStreetAdapter(this, R.layout.listview_tourstreet, cursor);
         lvList.setAdapter(adapter);
-
-
 
         //		리스트 뷰 클릭 처리
         lvList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Toast.makeText(MainActivity.this, "clicked!", Toast.LENGTH_SHORT).show();
+                cursor.moveToPosition(position);
                 Intent intent = new Intent(MainActivity.this, StreetActivity.class);
-                intent.putExtra("dto", resultList.get(position));
+                TourStreetDto dto = new TourStreetDto();
+                dto.set_id(cursor.getInt(cursor.getColumnIndex(StreetDBHelper.COL_ID)));
+                dto.setName(cursor.getString(cursor.getColumnIndex(StreetDBHelper.COL_NAME)));
+                dto.setStreetInfo(cursor.getString(cursor.getColumnIndex(StreetDBHelper.COL_INFO)));
+                dto.setAddress(cursor.getString(cursor.getColumnIndex(StreetDBHelper.COL_ADDR)));
+                dto.setLength(cursor.getString(cursor.getColumnIndex(StreetDBHelper.COL_LENGTH)));
+                dto.setStoreNum(cursor.getString(cursor.getColumnIndex(StreetDBHelper.COL_STORENUM)));
+                dto.setInstitution(cursor.getString(cursor.getColumnIndex(StreetDBHelper.COL_INSTT)));
+                dto.setLatitude(cursor.getString(cursor.getColumnIndex(StreetDBHelper.COL_LAT)));
+                dto.setHardness(cursor.getString(cursor.getColumnIndex(StreetDBHelper.COL_HAR)));
+                intent.putExtra("dto", dto);
                 startActivity(intent);
             }
         });
@@ -133,15 +137,14 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        if (cursor != null) cursor.close();
     }
 
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btnSearch:
                 String input = etTarget.getText().toString().trim();
-                Toast.makeText(this, "clicked!" + input, Toast.LENGTH_SHORT).show();
                 searchStreets(input, radioButton);
-                adapter.notifyDataSetChanged(); // DB의 내용으로 갱신한 contactList의 내용을 ListView에 반영하기 위해 호출
                 break;
         }
     }
@@ -151,12 +154,9 @@ public class MainActivity extends AppCompatActivity {
         InputStream inputStream = getResources().openRawResource(R.raw.tour_street);
         InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
         BufferedReader reader = new BufferedReader(inputStreamReader);
-//        adapter.setList(resultList);    // Adapter 에 파싱 결과를 담고 있는 ArrayList 를 설정
-//        adapter.notifyDataSetChanged();
-//        lvList.setAdapter(adapter);
 
         /* DB 저장 코드 */
-        insertDB(parser.parse(reader));
+        insertAllDB(parser.parse(reader));
     }
 
     private void searchStreets(String keyword, RadioButton radioButton) {
@@ -164,38 +164,24 @@ public class MainActivity extends AppCompatActivity {
         SQLiteDatabase db = helper.getReadableDatabase();
 
         if (radioButton.getId() == R.id.radio_keyword) {
-            cursor = db.rawQuery("select * from " + StreetDBHelper.TABLE_NAME +
+            cursor = db.rawQuery("select * from " + StreetDBHelper.TABLE_NAME_STREET +
                     " where " + StreetDBHelper.COL_NAME + " like '%" + keyword + "%'", null);
         } else if (radioButton.getId() == R.id.radio_area) {
-            cursor = db.rawQuery("select * from " + StreetDBHelper.TABLE_NAME +
+            cursor = db.rawQuery("select * from " + StreetDBHelper.TABLE_NAME_STREET +
                     " where " + StreetDBHelper.COL_ADDR + " like '%" + keyword + "%'", null);
         }
 
-        Log.d(TAG, "select * from " + StreetDBHelper.TABLE_NAME + " where " + StreetDBHelper.COL_NAME +
+        Log.d(TAG, "select * from " + StreetDBHelper.TABLE_NAME_STREET + " where " + StreetDBHelper.COL_NAME +
                 " LIKE '%" + keyword + "%';");
-        resultList.clear();
-        while (cursor.moveToNext()) {
-            TourStreetDto dto = new TourStreetDto();
-            dto.set_id(cursor.getInt(cursor.getColumnIndex("_id")));
-            dto.setName(cursor.getString(cursor.getColumnIndex(StreetDBHelper.COL_NAME)));
-            dto.setStreetInfo(cursor.getString(cursor.getColumnIndex(StreetDBHelper.COL_INFO)));
-            dto.setAddress(cursor.getString(cursor.getColumnIndex(StreetDBHelper.COL_ADDR)));
-            dto.setLength(cursor.getString(cursor.getColumnIndex(StreetDBHelper.COL_LENGTH)));
-            dto.setStoreNum(cursor.getString(cursor.getColumnIndex(StreetDBHelper.COL_STORENUM)));
-            dto.setInstitution(cursor.getString(cursor.getColumnIndex(StreetDBHelper.COL_INSTT)));
-            dto.setLatitude(cursor.getString(cursor.getColumnIndex(StreetDBHelper.COL_LAT)));
-            dto.setHardness(cursor.getString(cursor.getColumnIndex(StreetDBHelper.COL_HAR)));
-            resultList.add(dto);
-        }
-        cursor.close();
+        adapter.changeCursor(cursor);
         helper.close();
     }
 
-    public void insertDB(ArrayList<TourStreetDto> list) {
+    public void insertAllDB(ArrayList<TourStreetDto> list) {
         //			DB 데이터 삽입 작업 수행
 
         SQLiteDatabase db = helper.getWritableDatabase();
-        db.delete(StreetDBHelper.TABLE_NAME, null, null); // 안하면 insert문 계속 쌓임
+        db.delete(StreetDBHelper.TABLE_NAME_STREET, null, null); // 안하면 insert문 계속 쌓임
         for (TourStreetDto dto : list) {
             ContentValues row = new ContentValues();
             row.put(StreetDBHelper.COL_NAME, dto.getName());
@@ -207,8 +193,7 @@ public class MainActivity extends AppCompatActivity {
             row.put(StreetDBHelper.COL_LAT, dto.getLatitude());
             row.put(StreetDBHelper.COL_HAR, dto.getHardness());
 
-            db.insert(StreetDBHelper.TABLE_NAME, null, row);
-
+            db.insert(StreetDBHelper.TABLE_NAME_STREET, null, row);
         }
         helper.close();
 
@@ -223,9 +208,13 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.menu_scrapbook:
-//                Intent intent_add = new Intent(this, AddActivity.class);
-//                startActivityForResult(intent_add, ADD_CODE);
+            case R.id.home:
+                Intent intent_home = new Intent(this, MainActivity.class);
+                startActivity(intent_home);
+                break;
+            case R.id.menu_favorite:
+                Intent intent_scrap = new Intent(this, FavoriteActivity.class);
+                startActivity(intent_scrap);
                 break;
             case R.id.menu_update:
                 final AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);

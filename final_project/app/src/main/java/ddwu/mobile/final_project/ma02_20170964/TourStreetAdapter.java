@@ -1,84 +1,54 @@
 package ddwu.mobile.final_project.ma02_20170964;
 
 import android.content.Context;
+import android.database.Cursor;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.CursorAdapter;
 import android.widget.TextView;
 
 import java.util.ArrayList;
 
-public class TourStreetAdapter extends BaseAdapter {
+public class TourStreetAdapter extends CursorAdapter {
 
     public static final String TAG = "MyTourStreetAdapter";
 
     private LayoutInflater inflater;
-    private Context context;
+    private Cursor cursor;
     private int layout;
-    private ArrayList<TourStreetDto> list;
 
-
-    public TourStreetAdapter(Context context, int resource, ArrayList<TourStreetDto> list) {
-        this.context = context;
-        this.layout = resource;
-        this.list = list;
+    public TourStreetAdapter(Context context, int layout, Cursor c) {
+        super(context, c, CursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER);
         inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        this.cursor = c;
+        this.layout = layout;
     }
 
-
     @Override
-    public int getCount() {
-        return list.size();
-    }
-
-
-    @Override
-    public TourStreetDto getItem(int position) {
-        return list.get(position);
-    }
-
-
-    @Override
-    public long getItemId(int position) {
-        return list.get(position).get_id();
-    }
-
-
-    @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-
-        Log.d(TAG, "getView with position : " + position);
-        View view = convertView;
+    public View newView(Context context, Cursor cursor, ViewGroup parent) {
+        View view = inflater.inflate(R.layout.listview_tourstreet, null);
         ViewHolder viewHolder = null;
-
-        if (view == null) {
-            view = inflater.inflate(layout, parent, false);
-            viewHolder = new ViewHolder();
-            viewHolder.tvName = view.findViewById(R.id.tvStoreName);
-            viewHolder.tvAddress = view.findViewById(R.id.tvStoreAddr);
-            viewHolder.tvStoreNum = view.findViewById(R.id.tvStoreNum);
-            viewHolder.tvLength = view.findViewById(R.id.tvLength);
-            view.setTag(viewHolder);
-        } else {
-            viewHolder = (ViewHolder) view.getTag();
-        }
-
-        TourStreetDto dto = list.get(position);
-
-        viewHolder.tvName.setText(dto.getName());
-        viewHolder.tvAddress.setText(dto.getAddress());
-        viewHolder.tvStoreNum.setText("점포수: " + dto.getStoreNum());
-        viewHolder.tvLength.setText("총 길이: " + dto.getLength() + " m");
-
+        viewHolder = new ViewHolder();
+        viewHolder.tvName = view.findViewById(R.id.tvStreetName);
+        viewHolder.tvAddress = view.findViewById(R.id.tvStreetAddr);
+        viewHolder.tvStoreNum = view.findViewById(R.id.tvStreetStoreNum);
+        viewHolder.tvLength = view.findViewById(R.id.tvStreetLength);
+        view.setTag(viewHolder);
         return view;
     }
 
-    public void setList(ArrayList<TourStreetDto> list) {
-        this.list = list;
-    }
+    @Override
+    public void bindView(View view, Context context, Cursor cursor) {
+        ViewHolder viewHolder = (ViewHolder) view.getTag();
 
+        viewHolder.tvName.setText(cursor.getString(cursor.getColumnIndex(StreetDBHelper.COL_NAME)));
+        viewHolder.tvAddress.setText(cursor.getString(cursor.getColumnIndex(StreetDBHelper.COL_ADDR)));
+        viewHolder.tvStoreNum.setText("점포수: " + cursor.getString(cursor.getColumnIndex(StreetDBHelper.COL_STORENUM)));
+        viewHolder.tvLength.setText("총 길이: " + cursor.getString(cursor.getColumnIndex(StreetDBHelper.COL_LENGTH)) + " m");
+    }
 
     //    ※ findViewById() 호출 감소를 위해 필수로 사용할 것
     static class ViewHolder {

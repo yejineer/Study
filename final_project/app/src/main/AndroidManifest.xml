@@ -25,6 +25,7 @@
         </activity>
         <activity android:name=".StreetActivity"></activity>
         <activity android:name=".DetailActivity"></activity>
+        <activity android:name=".FavoriteActivity"></activity>
         <service
             android:name=".FetchLatLngIntentService"
             android:exported="false"/>

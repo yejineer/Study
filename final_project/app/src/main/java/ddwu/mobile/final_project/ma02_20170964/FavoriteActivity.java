@@ -1,17 +1,13 @@
 package ddwu.mobile.final_project.ma02_20170964;
 
-import android.Manifest;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -22,22 +18,23 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 
-public class ScrapActivity extends AppCompatActivity {
+public class FavoriteActivity extends AppCompatActivity {
 
-    public static final String TAG = "ScrapActivity";
+    public static final String TAG = "FavoriteActivity";
     final static int PERMISSION_REQ_CODE = 300;
     public static Context context;
+
+    // UI
     EditText etTarget;
     ListView lvList;
 
@@ -55,10 +52,11 @@ public class ScrapActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_favorite);
         context = this;
-        etTarget = findViewById(R.id.etTarget);
-        lvList = findViewById(R.id.lvList);
+
+        etTarget = findViewById(R.id.etTarget_favorite);
+        lvList = findViewById(R.id.lvList_favorite);
 
         helper = new StreetDBHelper(this);
         parser = new TourStreetXmlParser();
@@ -72,9 +70,8 @@ public class ScrapActivity extends AppCompatActivity {
         lvList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Toast.makeText(ScrapActivity.this, "clicked!", Toast.LENGTH_SHORT).show();
                 cursor.moveToPosition(position);
-                Intent intent = new Intent(ScrapActivity.this, StreetActivity.class);
+                Intent intent = new Intent(FavoriteActivity.this, StreetActivity.class);
                 TourStreetDto dto = new TourStreetDto();
                 dto.set_id(cursor.getInt(cursor.getColumnIndex(StreetDBHelper.COL_ID)));
                 dto.setName(cursor.getString(cursor.getColumnIndex(StreetDBHelper.COL_NAME)));
@@ -90,18 +87,18 @@ public class ScrapActivity extends AppCompatActivity {
             }
         });
 
-        RadioGroup radioGroup = (RadioGroup) findViewById(R.id.radioGroup);
-        radioButton = (RadioButton) findViewById(R.id.radio_keyword);
+        RadioGroup radioGroup = (RadioGroup) findViewById(R.id.radioGroup_favorite);
+        radioButton = (RadioButton) findViewById(R.id.radio_keyword_favorite);
 
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
                 switch (checkedId) {
-                    case R.id.radio_keyword:
-                        radioButton = (RadioButton) findViewById(R.id.radio_keyword);
+                    case R.id.radio_keyword_favorite:
+                        radioButton = (RadioButton) findViewById(R.id.radio_keyword_favorite);
                         break;
-                    case R.id.radio_area:
-                        radioButton = (RadioButton) findViewById(R.id.radio_area);
+                    case R.id.radio_area_favorite:
+                        radioButton = (RadioButton) findViewById(R.id.radio_area_favorite);
                         break;
                 }
             }
@@ -127,9 +124,8 @@ public class ScrapActivity extends AppCompatActivity {
 
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.btnSearch:
+            case R.id.btnSearch_favorite:
                 String input = etTarget.getText().toString().trim();
-                Toast.makeText(this, "clicked!" + input, Toast.LENGTH_SHORT).show();
                 searchStreets(input, radioButton);
                 break;
         }
@@ -149,16 +145,13 @@ public class ScrapActivity extends AppCompatActivity {
 //        DB에서 데이터를 읽어와 Adapter에 설정
         SQLiteDatabase db = helper.getReadableDatabase();
 
-        if (radioButton.getId() == R.id.radio_keyword) {
-            cursor = db.rawQuery("select * from " + StreetDBHelper.TABLE_NAME_STREET +
+        if (radioButton.getId() == R.id.radio_keyword_favorite) {
+            cursor = db.rawQuery("select * from " + StreetDBHelper.TABLE_NAME_FAVORITE +
                     " where " + StreetDBHelper.COL_NAME + " like '%" + keyword + "%'", null);
-        } else if (radioButton.getId() == R.id.radio_area) {
-            cursor = db.rawQuery("select * from " + StreetDBHelper.TABLE_NAME_STREET +
+        } else if (radioButton.getId() == R.id.radio_area_favorite) {
+            cursor = db.rawQuery("select * from " + StreetDBHelper.TABLE_NAME_FAVORITE +
                     " where " + StreetDBHelper.COL_ADDR + " like '%" + keyword + "%'", null);
         }
-
-        Log.d(TAG, "select * from " + StreetDBHelper.TABLE_NAME_STREET + " where " + StreetDBHelper.COL_NAME +
-                " LIKE '%" + keyword + "%';");
         adapter.changeCursor(cursor);
         helper.close();
     }
@@ -197,8 +190,12 @@ public class ScrapActivity extends AppCompatActivity {
             case android.R.id.home:
                 onBackPressed();
                 return true;
+            case R.id.home:
+                Intent intent_home = new Intent(this, MainActivity.class);
+                startActivity(intent_home);
+                break;
             case R.id.menu_update:
-                final AlertDialog.Builder builder = new AlertDialog.Builder(ScrapActivity.this);
+                final AlertDialog.Builder builder = new AlertDialog.Builder(FavoriteActivity.this);
                 builder.setTitle("데이터 업데이트");
                 builder.setMessage("데이터를 업데이트하시겠습니까?");
                 builder.setIcon(R.mipmap.ic_update);
@@ -215,7 +212,7 @@ public class ScrapActivity extends AppCompatActivity {
                 dlg.show();
                 break;
             case R.id.menu_quit:
-                AlertDialog.Builder builder2 = new AlertDialog.Builder(ScrapActivity.this);
+                AlertDialog.Builder builder2 = new AlertDialog.Builder(FavoriteActivity.this);
                 builder2.setTitle("앱 종료");
                 builder2.setIcon(R.mipmap.question);
                 builder2.setMessage("앱을 종료하시겠습니까?");

@@ -8,7 +8,8 @@ import android.util.Log;
 public class StreetDBHelper extends SQLiteOpenHelper {
 
     private final static String DB_NAME = "street_db";
-    public final static String TABLE_NAME = "street_table";
+    public final static String TABLE_NAME_STREET = "street_table";
+    public final static String TABLE_NAME_FAVORITE = "favorite_table";
     public final static String COL_ID = "_id";
     public final static String COL_NAME = "name";           // 거리명
     public final static String COL_INFO = "info";           // 거리 정보
@@ -28,19 +29,27 @@ public class StreetDBHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL("create table " + TABLE_NAME + " (" + COL_ID + " integer primary key autoincrement, "
+        db.execSQL("create table " + TABLE_NAME_STREET + " (" + COL_ID + " integer primary key autoincrement, "
                 + COL_NAME + " TEXT, " + COL_INFO + " TEXT, " + COL_ADDR + " TEXT, " + COL_LENGTH + " TEXT, "
                 + COL_STORENUM + " TEXT, " + COL_INSTT + " TEXT, " + COL_LAT + " TEXT, " + COL_HAR + " TEXT);");
 
-        Log.d("DBHelper", "create table " + TABLE_NAME + " (" + COL_ID + " integer primary key autoincrement, "
+        Log.d("DBHelper", "create table " + TABLE_NAME_STREET + " (" + COL_ID + " integer primary key autoincrement, "
                 + COL_NAME + " TEXT, " + COL_INFO + " TEXT, " + COL_ADDR + " TEXT, " + COL_LENGTH + " TEXT, "
                 + COL_STORENUM + " TEXT, " + COL_INSTT + " TEXT, " + COL_LAT + " TEXT, " + COL_HAR + " TEXT);");
 
+        db.execSQL("create table " + TABLE_NAME_FAVORITE + " (" + COL_ID + " integer primary key autoincrement, "
+                + COL_NAME + " TEXT, " + COL_INFO + " TEXT, " + COL_ADDR + " TEXT, " + COL_LENGTH + " TEXT, "
+                + COL_STORENUM + " TEXT, " + COL_INSTT + " TEXT, " + COL_LAT + " TEXT, " + COL_HAR + " TEXT);");
+
+        Log.d("DBHelper", "create table " + TABLE_NAME_FAVORITE + " (" + COL_ID + " integer primary key autoincrement, "
+                + COL_NAME + " TEXT, " + COL_INFO + " TEXT, " + COL_ADDR + " TEXT, " + COL_LENGTH + " TEXT, "
+                + COL_STORENUM + " TEXT, " + COL_INSTT + " TEXT, " + COL_LAT + " TEXT, " + COL_HAR + " TEXT);");
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        db.execSQL("drop table " + TABLE_NAME);
+        db.execSQL("drop table " + TABLE_NAME_STREET);
+        db.execSQL("drop table " + TABLE_NAME_FAVORITE);
         onCreate(db);
     }
 

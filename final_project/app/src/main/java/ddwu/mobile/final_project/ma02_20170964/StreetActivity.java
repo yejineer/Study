@@ -5,6 +5,7 @@ import android.app.Dialog;
 import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -15,6 +16,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
@@ -60,6 +62,8 @@ public class StreetActivity extends AppCompatActivity implements OnMapReadyCallb
     private TextView tvStreetName;
     private TextView tvStreetAddr;
     private TextView tvStreetInfo;
+    private Button btnFavorite;
+    private RadioButton radioBtn;
     private GoogleMap mGoogleMap;
     private MarkerOptions centerMarkerOptions;
     private MarkerOptions markerOptions;
@@ -70,7 +74,6 @@ public class StreetActivity extends AppCompatActivity implements OnMapReadyCallb
 
     /*DATA*/
     TourStreetDto dto;
-    RadioButton radioBtn;
     TourStreetXmlParser parser;
 
     // TODO: Place 클라이언트 객체 선언
@@ -84,18 +87,23 @@ public class StreetActivity extends AppCompatActivity implements OnMapReadyCallb
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_street);
-        tvStreetName = (TextView)findViewById(R.id.tv_streetName);
-        tvStreetAddr = (TextView)findViewById(R.id.tv_streetAddr);
-        tvStreetInfo = (TextView)findViewById(R.id.tv_streetInfo);
+        tvStreetName = (TextView) findViewById(R.id.tv_streetName);
+        tvStreetAddr = (TextView) findViewById(R.id.tv_streetAddr);
+        tvStreetInfo = (TextView) findViewById(R.id.tv_streetInfo);
+        btnFavorite = (Button) findViewById(R.id.btnFavorite);
 
         /* MainActivity가 전달한 intent에서 latitude, hardness가져와 centerMarker찍기(없으면 도로명주소로)*/
-        dto = (TourStreetDto)getIntent().getSerializableExtra("dto");
+        dto = (TourStreetDto) getIntent().getSerializableExtra("dto");
         tvStreetName.setText(dto.getName());
         tvStreetAddr.setText(dto.getAddress());
         tvStreetInfo.setText(dto.getStreetInfo());
         Log.d(TAG, "위도: " + dto.getLatitude() + " 경도: " + dto.getHardness());
 
+        helper = new StreetDBHelper(StreetActivity.this);
         latLngResultReceiver = new LatLngResultReceiver(new Handler()); // IntentService가 생성하는 결과 수신용 ResultReceiver
+
+        /* 뒤로 가기 버튼 누를 시, Home으로 이동 */
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         mapLoad();
 
@@ -120,7 +128,34 @@ public class StreetActivity extends AppCompatActivity implements OnMapReadyCallb
             }
         });
 
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        /* 좋아요 누른 거리가 아니면, 빈 하트로 초기화 */
+        if (streetInFavoriteDB(dto)) {
+            btnFavorite.setBackgroundResource(R.drawable.ic_favorite_pressed);
+            btnFavorite.setTag("pressed");
+        } else {
+            btnFavorite.setBackgroundResource(R.drawable.ic_favorite_border);
+            btnFavorite.setTag("border");
+        }
+
+        btnFavorite.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                /* FavoriteTable에 없으면 좋아요, 있으면 해제 */
+                if (btnFavorite.getTag().equals("border")) {
+                    Log.d(TAG, "좋아요 클릭!");
+                    btnFavorite.setBackgroundResource(R.drawable.ic_favorite_pressed);
+                    btnFavorite.setTag("pressed");
+                    Toast.makeText(StreetActivity.this, "좋아요!", Toast.LENGTH_SHORT).show();
+                } else if (btnFavorite.getTag().equals("pressed")) {
+                    Log.d(TAG, "좋아요 해제!");
+                    btnFavorite.setBackgroundResource(R.drawable.ic_favorite_border);
+                    btnFavorite.setTag("border");
+                    Toast.makeText(StreetActivity.this, "좋아요 해제!", Toast.LENGTH_SHORT).show();
+                }
+                favoriteDB(dto, btnFavorite.getTag().toString());
+            }
+        });
+
     }
 
 
@@ -180,7 +215,7 @@ public class StreetActivity extends AppCompatActivity implements OnMapReadyCallb
     private void mapLoad() {
         // SupportMapFragment 는 하위 호환 고려 시 사용, activity_main 의 MapFragment 도 동일한 타입으로 선언
         SupportMapFragment mapFragment =
-                (SupportMapFragment)StreetActivity.this.getSupportFragmentManager().findFragmentById(R.id.map);
+                (SupportMapFragment) StreetActivity.this.getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(StreetActivity.this);      // 매개변수 this: MainActivity 가 OnMapReadyCallback 을 구현하므로
     }
 
@@ -189,7 +224,7 @@ public class StreetActivity extends AppCompatActivity implements OnMapReadyCallb
 //            mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLoc, 17));
 
         // 마커 정보 지정
-        centerMarkerOptions= new MarkerOptions();
+        centerMarkerOptions = new MarkerOptions();
         centerMarkerOptions.position(streetLoc);
         centerMarkerOptions.title(dto.getName());
         centerMarkerOptions.icon(BitmapDescriptorFactory.defaultMarker(200f));
@@ -200,7 +235,7 @@ public class StreetActivity extends AppCompatActivity implements OnMapReadyCallb
     }
 
     public void onClick(View v) {
-        switch(v.getId()) {
+        switch (v.getId()) {
             case R.id.btnSearch:
                 mGoogleMap.clear();
                 settingMap();
@@ -255,7 +290,7 @@ public class StreetActivity extends AppCompatActivity implements OnMapReadyCallb
                             drawble = getResources().getDrawable(R.drawable.ic_local_cafe_yellow);
                             Log.d(TAG, "drawble 지정 됨: 카페");
                         }
-                        markerOptions.icon(BitmapDescriptorFactory.fromBitmap(((BitmapDrawable)drawble).getBitmap()));
+                        markerOptions.icon(BitmapDescriptorFactory.fromBitmap(((BitmapDrawable) drawble).getBitmap()));
 
                         Marker newMarker = mGoogleMap.addMarker(markerOptions);
                         newMarker.setTag(place.getPlaceId());   // Marker의 setTag()를 사용하여 Place ID를 보관
@@ -307,6 +342,7 @@ public class StreetActivity extends AppCompatActivity implements OnMapReadyCallb
             }
         }
     }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
@@ -319,9 +355,13 @@ public class StreetActivity extends AppCompatActivity implements OnMapReadyCallb
             case android.R.id.home:
                 onBackPressed();
                 return true;
-            case R.id.menu_scrapbook:
-//                Intent intent_add = new Intent(this, AddActivity.class);
-//                startActivityForResult(intent_add, ADD_CODE);
+            case R.id.home:
+                Intent intent_home = new Intent(this, MainActivity.class);
+                startActivity(intent_home);
+                break;
+            case R.id.menu_favorite:
+                Intent intent_scrap = new Intent(this, FavoriteActivity.class);
+                startActivity(intent_scrap);
                 break;
             case R.id.menu_update:
                 final AlertDialog.Builder builder = new AlertDialog.Builder(StreetActivity.this);
@@ -343,16 +383,16 @@ public class StreetActivity extends AppCompatActivity implements OnMapReadyCallb
             case R.id.menu_quit:
                 AlertDialog.Builder builder2 = new AlertDialog.Builder(StreetActivity.this);
                 builder2.setTitle("앱 종료")
-                .setIcon(R.mipmap.question)
-                .setMessage("앱을 종료하시겠습니까?")
-                .setPositiveButton("종료", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        finish();
-                    }
-                })
-                .setNegativeButton("취소", null)
-                .show();
+                        .setIcon(R.mipmap.question)
+                        .setMessage("앱을 종료하시겠습니까?")
+                        .setPositiveButton("종료", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                finish();
+                            }
+                        })
+                        .setNegativeButton("취소", null)
+                        .show();
                 Dialog dlg2 = builder2.create(); //대화 상자 생성, 표시 X
                 dlg2.setCanceledOnTouchOutside(false);
                 dlg2.show();
@@ -366,14 +406,15 @@ public class StreetActivity extends AppCompatActivity implements OnMapReadyCallb
         InputStream inputStream = getResources().openRawResource(R.raw.tour_street);
         InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
         BufferedReader reader = new BufferedReader(inputStreamReader);
+
         /* DB 저장 코드 */
-        insertDB(parser.parse(reader));
+        insertAllDB(parser.parse(reader));
     }
 
-    public void insertDB(ArrayList<TourStreetDto> list) {
+    public void insertAllDB(ArrayList<TourStreetDto> list) {
         //			DB 데이터 삽입 작업 수행
         SQLiteDatabase db = helper.getWritableDatabase();
-        db.delete(StreetDBHelper.TABLE_NAME, null, null); // 안하면 insert문 계속 쌓임
+        db.delete(StreetDBHelper.TABLE_NAME_STREET, null, null); // 안하면 insert문 계속 쌓임
         for (TourStreetDto dto : list) {
             ContentValues row = new ContentValues();
             row.put(StreetDBHelper.COL_NAME, dto.getName());
@@ -385,10 +426,56 @@ public class StreetActivity extends AppCompatActivity implements OnMapReadyCallb
             row.put(StreetDBHelper.COL_LAT, dto.getLatitude());
             row.put(StreetDBHelper.COL_HAR, dto.getHardness());
 
-            db.insert(StreetDBHelper.TABLE_NAME, null, row);
+            db.insert(StreetDBHelper.TABLE_NAME_STREET, null, row);
 
         }
         helper.close();
 
+    }
+
+    public void favoriteDB(TourStreetDto dto, String tag) {
+        SQLiteDatabase db = helper.getWritableDatabase();
+//        db.delete(StreetDBHelper.TABLE_NAME_FAVORITE, null, null); // 안하면 insert문 계속 쌓임
+
+        /* tag가 "border"일 때, DB 데이터 삽입 작업 수행 */
+        if (tag.equals("pressed")) {
+            ContentValues row = new ContentValues();
+            row.put(StreetDBHelper.COL_NAME, dto.getName());
+            row.put(StreetDBHelper.COL_INFO, dto.getStreetInfo());
+            row.put(StreetDBHelper.COL_ADDR, dto.getAddress());
+            row.put(StreetDBHelper.COL_LENGTH, dto.getLength());
+            row.put(StreetDBHelper.COL_STORENUM, dto.getStoreNum());
+            row.put(StreetDBHelper.COL_INSTT, dto.getInstitution());
+            row.put(StreetDBHelper.COL_LAT, dto.getLatitude());
+            row.put(StreetDBHelper.COL_HAR, dto.getHardness());
+
+            db.insert(StreetDBHelper.TABLE_NAME_FAVORITE, null, row);
+        } else if (tag.equals("border")) {
+            String whereClause = StreetDBHelper.COL_NAME + "=?";
+            String[] whereArgs = new String[]{String.valueOf(dto.getName())};
+
+            db.delete(StreetDBHelper.TABLE_NAME_FAVORITE, whereClause, whereArgs);
+        }
+
+        helper.close();
+
+    }
+
+    private boolean streetInFavoriteDB(TourStreetDto dto) {
+        SQLiteDatabase db = helper.getReadableDatabase();
+
+        Cursor findCursor;
+        findCursor = db.rawQuery("select * from " + StreetDBHelper.TABLE_NAME_FAVORITE +
+                " where " + StreetDBHelper.COL_NAME + " like '" + dto.getName() + "'", null);
+
+        boolean result;
+        if (findCursor.moveToNext())
+            result = true;
+        else
+            result = false;
+        findCursor.close();
+        helper.close();
+
+        return result;
     }
 }
