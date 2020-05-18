@@ -26,13 +26,13 @@
 		<form:errors path="time" />
 		<br/>
 		
-		<label for="area">선호 지역</label>: 
-		<form:radiobuttons items="${areas}" path="area" />
-		<form:errors path="area" />
+		<label for="place">공연 장소</label>: 
+		<form:radiobuttons items="${places}" path="place" />
+		<form:errors path="place" />
 		<br/>
 		
-		<label for="firstTime"> <form:checkbox path="firstTime" />
-			첫 공연?
+		<label for="firstTime">첫 공연?
+		<form:checkbox path="firstTime" />
 		</label>
 		<br/>
 

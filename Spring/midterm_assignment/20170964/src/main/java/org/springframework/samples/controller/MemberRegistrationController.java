@@ -38,7 +38,7 @@ public class MemberRegistrationController {
 		this.memberService = memberService;
 	}
 
-	@ModelAttribute("regReq") 			// request handler methods 보다 먼저 호출됨
+	@ModelAttribute("regReq") 			// request handler methods 보다 먼저 호출되는 accessor method
 	public MemberRegistRequest formBacking(HttpServletRequest request) {
 		if (request.getMethod().equalsIgnoreCase("GET")) {
 			MemberRegistRequest memRegReq = new MemberRegistRequest();
@@ -61,8 +61,7 @@ public class MemberRegistrationController {
 			BindingResult bindingResult, Model model) {		
 		System.out.println("command 객체: " + memRegReq);
 		checkDuplicateId(memRegReq.getEmail(), bindingResult); // ID 중복 검사
-//		new MemberRegisterValidator().validate(memRegReq, bindingResult); //생략 가능
-		/* 그러나 두 암호가 일치하는 여부 검사를 위한 아래 코드 추가 필요 */
+		/* 두 암호가 일치하는 여부 검사를 위한 아래 코드 추가 필요 */
 		if (!memRegReq.isSamePasswordConfirmPassword()) {
 			bindingResult.rejectValue("confirmPassword", "notSame");
 		}
@@ -101,8 +100,8 @@ public class MemberRegistrationController {
 		if (memRegReq.getSong().trim().isEmpty()) {
 			bindingResult.rejectValue("song", "required");
 		}
-		if (memRegReq.getArea().trim().isEmpty()) {
-			bindingResult.rejectValue("area", "required");
+		if (memRegReq.getPlace() == null || memRegReq.getPlace().trim().isEmpty()) {
+			bindingResult.rejectValue("place", "required");
 		}
 		
 		if (bindingResult.hasErrors()) {
@@ -113,10 +112,10 @@ public class MemberRegistrationController {
 		return MEMBER_REGISTRATION_FORM_STEP3;
 	}
 	
-	@RequestMapping(value="/member/register/done", method = RequestMethod.POST) // step3 -> step4 이동
+	@RequestMapping(value="/member/register/done", method = RequestMethod.POST)
 	public String done(
 			@ModelAttribute("regReq") MemberRegistRequest memRegReq,
-			Model model, SessionStatus sessionStatus) {	
+			Model model, SessionStatus sessionStatus) {	 // step3 -> step4 이동
 		String mid = memberService.registerNewMember(memRegReq);
 		model.addAttribute("memberId", mid);
 		Date registerDate = new Date();
@@ -132,18 +131,18 @@ public class MemberRegistrationController {
 	}
 	
 	@ModelAttribute("typeCodes")
-	public List<String> referenceData1() {
+	public List<String> referenceData1() {	// accessor method
 		List<String> typeCodes = new ArrayList<String>();
 		typeCodes.add("Instrumentalist");
 		typeCodes.add("Singer");
 		typeCodes.add("PoeticJuggler");
 		typeCodes.add("OneManBand");
-		return typeCodes;
+		return typeCodes;	// view에 전달됨
 	}
 	
-	@ModelAttribute("areas")
+	@ModelAttribute("places")
 	public String[] referenceData() {
-		return new String[] { "서울", "경기", "광주", "부산", "제주" };
+		return new String[] { "내부 무대", "외부 무대"};
 	}
 
 }

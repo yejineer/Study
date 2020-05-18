@@ -29,7 +29,7 @@ public class MemberRegistRequest { //순수한 Form입력받을거니까 id필�
 	private String type;		// 공연 종류
 	private String song;		// 곡명
 	private String time;		// 공연 시간 (30분 이내)
-	private String area;		// 선호 지역
+	private String place;		// 공연 장소
 	private boolean firstTime;	// 첫 공연 여부
 
 	public String getEmail() {
@@ -114,12 +114,12 @@ public class MemberRegistRequest { //순수한 Form입력받을거니까 id필�
 		this.time = time;
 	}
 
-	public String getArea() {
-		return area;
+	public String getPlace() {
+		return place;
 	}
 
-	public void setArea(String area) {
-		this.area = area;
+	public void setPlace(String place) {
+		this.place = place;
 	}
 
 	public boolean isFirstTime() {
@@ -133,6 +133,7 @@ public class MemberRegistRequest { //순수한 Form입력받을거니까 id필�
 	@Override
 	public String toString() {
 		return "MemberRegistRequest [name=" + name + ", address=" + address + ", email=" + email + ", password="
-		+ password + ", confirmPassword=" + confirmPassword + ", phone=" + phone + ", type=" + type + ", area=" + area + "]";
+		+ password + ", confirmPassword=" + confirmPassword + ", phone=" + phone + ", type=" + type 
+		+ ", song=" + song + ", place=" + place + "]";
 	}
 }

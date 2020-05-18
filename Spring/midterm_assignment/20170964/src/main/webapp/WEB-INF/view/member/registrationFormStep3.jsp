@@ -20,7 +20,7 @@
 		공연 종류: ${regReq.type}<br/>
 		곡명: ${regReq.song}<br/>
 		공연 시간: ${regReq.time}<br/>
-		선호 지역: ${regReq.area}<br/>
+		공연 장소: ${regReq.place}<br/>
 		첫 공연 여부: ${regReq.firstTime}<br/>
 		<br/>
 		<a href="step2">[이전 단계로]</a> &nbsp;&nbsp;

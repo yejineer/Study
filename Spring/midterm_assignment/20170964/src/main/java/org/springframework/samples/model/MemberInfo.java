@@ -13,14 +13,14 @@ public class MemberInfo {
 	private String type;		// 공연 종류
 	private String song;		// 곡명
 	private int time;			// 공연 시간 (30분 이내)
-	private String area;		// 선호 지역
+	private String place;		// 공연 장소
 	private boolean firstTime;	// 첫 공연 여부
 
 	public MemberInfo() {
 	}
 
 	public MemberInfo(String id, String name, String email, String password, String phone, Address address, 
-					String type, String song, int time, String area, boolean firstTime) {
+					String type, String song, int time, String place, boolean firstTime) {
 		this.id = id;
 		this.name = name;
 		this.email = email;
@@ -30,7 +30,7 @@ public class MemberInfo {
 		this.type = type;
 		this.song = song;
 		this.time = time;
-		this.area = area;
+		this.place = place;
 		this.firstTime = firstTime;
 	}
 
@@ -102,12 +102,12 @@ public class MemberInfo {
 		this.time = time;
 	}
 
-	public String getArea() {
-		return area;
+	public String getPlace() {
+		return place;
 	}
 
-	public void setArea(String area) {
-		this.area = area;
+	public void setPlace(String place) {
+		this.place = place;
 	}
 
 	public boolean isFirstTime() {
@@ -118,11 +118,4 @@ public class MemberInfo {
 		this.firstTime = firstTime;
 	}
 
-//	public Date getPerformanceDate() {
-//		return performanceDate;
-//	}
-//
-//	public void setPerformanceDate(Date performanceDate) {
-//		this.performanceDate = performanceDate;
-//	}
 }

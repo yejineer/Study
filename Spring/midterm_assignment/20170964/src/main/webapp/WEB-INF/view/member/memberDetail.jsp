@@ -16,7 +16,7 @@
 	<li>공연 종류: ${member.type}</li>
 	<li>곡명: ${member.song}</li>
 	<li>공연 시간: ${member.time}</li>
-	<li>선호 지역: ${member.area}</li>
+	<li>선호 지역: ${member.place}</li>
 	<li>첫 공연 여부: ${member.firstTime}</li>
 </ul>
 

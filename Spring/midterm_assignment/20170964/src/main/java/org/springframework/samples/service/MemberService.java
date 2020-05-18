@@ -17,10 +17,9 @@ public class MemberService {
 	private Map<String, MemberInfo> memberMap = new HashMap<String, MemberInfo>();
 
 	public MemberService() {
-		memberMap.put("m1", new MemberInfo("m1", "Scott", "scott@yahoo.com", "scott", "010-1111-1111", new Address("01520", "Seoul", "Korea"), "Singer", "ABC", 25, "서울", false));
-		memberMap.put("m2", new MemberInfo("m2", "Peter", "peter@hotmail.com", "peter", "010-1111-1111", new Address("08290", "Busan", "Korea"), "Singer", "DEF", 30, "경기", true));
-		memberMap.put("m3", new MemberInfo("m3", "Jain", "jain@gmail.com", "jain", "010-1111-1111", new Address("04730", "Incheon", "Korea"), "Singer", "GHI", 13, "제주", false));
-		nextMemberId = 4;
+		memberMap.put("m1", new MemberInfo("m1", "Yejin Lee", "yejin@gmail.com", "111111", "010-1111-1111", new Address("01520", "Seoul", "Korea"), "Singer", "Departure", 15, "내부", false));
+		memberMap.put("m2", new MemberInfo("m2", "대박이", "daebak@naver.com", "222222", "010-2222-2222", new Address("08290", "Busan", "Korea"), "OneManBand", "멍멍!", 20, "외부", true));
+		nextMemberId = 3;
 	}
 
 	public List<MemberInfo> getMembers() {
@@ -50,7 +49,7 @@ public class MemberService {
 							memRegReq.getType(),
 							memRegReq.getSong(),
 							Integer.valueOf(memRegReq.getTime()),
-							memRegReq.getArea(),
+							memRegReq.getPlace(),
 							memRegReq.isFirstTime());
 		nextMemberId++;
 		memberMap.put(mi.getId(), mi);

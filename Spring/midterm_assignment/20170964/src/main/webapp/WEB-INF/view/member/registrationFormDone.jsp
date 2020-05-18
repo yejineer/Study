@@ -22,7 +22,7 @@ ${regReq.name}님의 공연 신청을 접수했습니다.
 	<li>공연 종류: ${regReq.type}</li>
 	<li>곡명: ${regReq.song}</li>
 	<li>공연 시간: ${regReq.time}</li>
-	<li>선호 지역: ${regReq.area}</li>
+	<li>공연 장소: ${regReq.place}</li>
 	<li>첫 공연 여부: ${regReq.firstTime}</li>
 
 </ul>
