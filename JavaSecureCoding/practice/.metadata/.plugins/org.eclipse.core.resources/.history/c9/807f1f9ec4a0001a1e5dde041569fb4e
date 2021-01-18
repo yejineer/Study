@@ -1,0 +1,34 @@
+package practice19;
+
+import java.util.Scanner;
+
+public class Practice19 {
+
+	Score[][] scoreBoard = {
+			{Score.EQUAL,  Score.LOSE, Score.WIN},
+			{Score.WIN,  Score.EQUAL, Score.LOSE},
+			{Score.LOSE,  Score.WIN, Score.EQUAL}
+	};
+	
+	public static void main(String[] args) {
+		Scanner s = new Scanner(System.in);
+		
+		Game com = Game.SCISSORS;
+		System.out.println("컴퓨터의 입력 : " + com.decode());
+		
+		System.out.print("당신의 입력 : ");
+		String yourInput = s.next();
+		Game user = Game.encode(yourInput);
+		
+		Score rslt = whoswin(user, com);
+		System.out.println(Score.print(rslt));
+		
+		s.close();
+	}
+	
+
+	public Score whoswin(Game user, Game com) {
+		
+	}
+
+}

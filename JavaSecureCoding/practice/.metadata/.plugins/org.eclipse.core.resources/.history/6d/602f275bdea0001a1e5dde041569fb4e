@@ -1,0 +1,48 @@
+package practice16;
+
+import java.lang.reflect.*;
+
+/**
+ * 
+ * @author bambi
+ *
+ *         클래스 이름 소속 변수의 이름과 타입, 접근 제어자 소속 메소드의 메소드 시그니처 생성자 시그니처
+ */
+public class Practice16 {
+
+	public static void main(String[] args) throws ClassNotFoundException {
+
+		Class<?> cls = Class.forName(args[0]);
+		System.out.println("클래스 이름 = " + cls.getName());
+
+		// 클래스 필드 찾기
+		System.out.println("<<" + cls.getName() + "클래스의 소속 변수>>");
+		Field flist[] = cls.getDeclaredFields();
+
+		for (Field fld : flist) {
+			System.out.println("-----");
+			System.out.println("이름 = " + fld.getName());
+			System.out.println("타입 = " + fld.getType());
+
+			int mod = fld.getModifiers();
+			System.out.println("접근 제어자 = " + Modifier.toString(mod));
+		}
+
+		// 클래스 메소드
+		System.out.println("\n<<소속 메소드의 메소드 시그니처>>");
+		Method mlist[] = cls.getDeclaredMethods();
+
+		for (Method m : mlist) {
+			System.out.println(m.toString());
+		}
+
+		// 클래스 메소드
+		System.out.println("\n<<생성자 시그니처>>");
+
+		Constructor<?> ctorlist[] = cls.getDeclaredConstructors();
+		for (Constructor<?> c : ctorlist) {
+			System.out.println(c.toString());
+		}
+	}
+
+}

@@ -1,0 +1,30 @@
+// 컴퓨터학과 20170964 이예진
+
+import java.util.Scanner;
+
+public class CCLoader extends ClassLoader {
+	
+	public CCLoader(ClassLoader classLoader) {
+		super(classLoader);
+	}
+	
+	@Override
+	public Class<?> loadClass(String name) throws ClassNotFoundException {
+		Scanner scan = new Scanner(System.in);
+		System.out.print("사용자 이름을 입력하세요: ");
+		String username = scan.nextLine();
+		System.out.print("패스워드를 입력하세요: ");
+		String password = scan.nextLine();
+		
+		try {
+			if (!username.equals("dongduk") || !password.equals("1234")) {
+				throw new Exception();
+			}
+			System.out.println("Loading Class \"" + name + "\"");
+			return super.loadClass(name);
+		} catch (Exception e) {
+			System.out.println("사용자 아이디 혹은 비번이 일치하지 않습니다.");
+		}
+		
+	}
+}

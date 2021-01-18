@@ -1,0 +1,9 @@
+package practice20;
+
+public interface Language {
+
+	public String encode();
+	public String decode();
+	public String print(Score s);
+	
+}

@@ -1,0 +1,18 @@
+package practice20;
+
+public class Korean {
+
+	public String decode() {
+		switch (name()) {
+			case "ROCK":
+				return "바위";
+			case "PAPER":
+				return "보";
+			case "SCISSORS":
+				return "가위";
+			default:
+				return "에러";
+		}
+	}
+
+}

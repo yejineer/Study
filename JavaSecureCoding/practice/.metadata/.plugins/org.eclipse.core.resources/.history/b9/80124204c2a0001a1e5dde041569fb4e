@@ -1,0 +1,5 @@
+package practice19;
+
+public enum Game {
+
+}

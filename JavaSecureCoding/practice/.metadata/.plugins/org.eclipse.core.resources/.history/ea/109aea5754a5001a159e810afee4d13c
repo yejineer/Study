@@ -1,0 +1,7 @@
+package practice20;
+
+public interface Language {
+
+	public String decode();
+
+}

@@ -1,0 +1,46 @@
+package practice20;
+
+public class Korean implements Language {
+
+	Game g;
+	public Game encode(String input) {
+
+	}
+	
+	public String decode() {
+
+	}
+
+	@Override
+	public String encode(String input) {
+		switch (input) {
+		case "바위":
+			return ROCK;
+		case "보":
+			return PAPER;
+		case "가위":
+			return SCISSORS;
+		default:
+			return ERROR;
+	}
+
+	@Override
+	public String decode(String input) {
+		switch (name()) {
+		case "ROCK":
+			return "바위";
+		case "PAPER":
+			return "보";
+		case "SCISSORS":
+			return "가위";
+		default:
+			return "에러";
+	}	}
+
+	@Override
+	public String print(Score s) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+}

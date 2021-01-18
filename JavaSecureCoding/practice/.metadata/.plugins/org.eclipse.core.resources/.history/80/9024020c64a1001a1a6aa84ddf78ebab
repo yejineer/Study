@@ -1,0 +1,15 @@
+package practice20;
+
+public enum Language {
+	LAN_KOR(new Korean()), LAG_ENG(2), LAG_JAP(3);
+
+	Language(int num) { 	// Constructor
+		LanguageNum = num;
+	}
+	
+	int LanguageNum;
+	public int getLanguageNum() {
+		return LanguageNum;
+	}
+	
+}

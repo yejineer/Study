@@ -1,0 +1,10 @@
+package practice19;
+
+public enum Score {
+	WIN, LOSE, EQUAL;
+	
+	public static String print(Score rslt) {
+		String s="";
+		return s;
+	}
+}

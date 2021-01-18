@@ -1,0 +1,7 @@
+package practice19;
+
+public enum Score {
+	WIN, LOSE, EQUAL;
+	
+	
+}

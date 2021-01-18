@@ -1,0 +1,43 @@
+package practice20;
+
+public enum Language {
+	LAN_KOR(new String[] {"바위", "보", "가위"}), 
+	LAG_ENG(new String[] {"ROCK", "PAPER", "SCISSORS"});  
+
+	Language(String[] language) { 	// Constructor
+		LanguageVar = language;
+	}
+	
+	String[] LanguageVar;
+	
+	public String[] getLanguageVar() {
+		return LanguageVar;
+	}
+	
+//	public static Game encode(String input) {
+//		switch (input) {
+//			case "바위":
+//				return ROCK;
+//			case "보":
+//				return PAPER;
+//			case "가위":
+//				return SCISSORS;
+//			default:
+//				return ERROR;
+//		}
+//	}
+	
+	public String decode() {
+		switch (name()) {
+			case "ROCK":
+				return "바위";
+			case "PAPER":
+				return "보";
+			case "SCISSORS":
+				return "가위";
+			default:
+				return "에러";
+		}
+	}
+	
+}

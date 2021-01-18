@@ -1,0 +1,18 @@
+package practice20;
+
+public enum LanguageEnum {
+	LAN_KOR(new Korean()), 
+	LAG_ENG(new English()); 
+//	LAG_JAP(new String[] {"SCISSOR", "πŸ¿ß", "∫∏"});
+
+	Language(Object language) { 	// Constructor
+		 = language;
+	}
+	
+	Object LanguageVar;
+	
+	public String[] getLanguageVar() {
+		return LanguageVar;
+	}
+	
+}

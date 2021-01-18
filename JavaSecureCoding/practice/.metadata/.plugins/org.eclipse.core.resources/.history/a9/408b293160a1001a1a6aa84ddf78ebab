@@ -1,0 +1,14 @@
+package practice20;
+
+public enum Language {
+	Korean(1), English(2), Japanese(3);
+
+	Language(int num) { 	// Constructor
+		LanguageNum = num;
+	}
+	
+	int LanguageNum;
+	public int getLanguageNum() {
+		return LanguageNum;
+	}
+}

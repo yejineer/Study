@@ -1,0 +1,28 @@
+package practice19;
+
+public enum Game {
+	ROCK(0), PAPER(1), SCISSORS(2), ERROR(-1);
+	
+	// Constructor
+	Game(int num) {
+		
+	}
+	// add whatever methods you need
+	
+	public static Game encode(String input) {
+		switch (input) {
+			case "바위":
+				return ROCK;
+			case "보":
+				return PAPER;
+			case "가위":
+				return SCISSORS;
+			default:
+				return ERROR;
+		}
+	}
+	
+	public String decode() {
+		
+	}
+}
