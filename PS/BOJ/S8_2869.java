@@ -12,13 +12,9 @@ public class S8_2869 {
 		int B = Integer.valueOf(st.nextToken());
 		int V = Integer.valueOf(st.nextToken());
 		
-		int pos = 0;
 		int day = (V-B) / (A-B);
-		
-		if((V-B)%(A-B)!=0) {
+		if((V-B)%(A-B)!=0)
 			day++;
-			
-		}
 		System.out.println(day);
 	}
 
