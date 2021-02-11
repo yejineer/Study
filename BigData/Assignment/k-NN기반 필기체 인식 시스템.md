@@ -1,3 +1,21 @@
+# 문제 설명
+### 목적
+K-Nearest Neighbor 알고리즘을 이용해서 필기체 인식 시스템을 만들어보자.
+### 제공하는 데이터
+- trainingDigits 폴더 : N_M.txt (N: 숫자, M: 데이터 ID)
+  ![image](https://user-images.githubusercontent.com/50271884/107652462-f46ae200-6cc3-11eb-971f-61b5d71b93e8.png)
+- testDigits 폴더 : N_M.txt (N: 숫자, M: 데이터 ID)
+  ![image](https://user-images.githubusercontent.com/50271884/107652904-693e1c00-6cc4-11eb-81a7-2c620adc6d22.png)
+    - 이 폴더의 모든 파일 데이터를 읽어서 숫자를 인식해야 한다.  
+      그리고 인식한 결과와 실제 라벨을 확인해서 에러율을 계산하자.  
+      cf) 에러율 = 예측을 실패한 경우 / 전체 파일 개수 * 100
+### 출력
+- KNN 알고리즘에서 k를 변화시켜가면서 에러율을 출력하자.
+- 출력 규칙
+  - K가 1, 3, 5... 19일 때의 에러율 10개를 차례대로 출력한다.
+  - 숫자 20개가 차례대로 한 줄에 한 숫자로 출력되며 소수점은 절사한다.
+  
+# 코드
 ```python
 from numpy import *
 from os import listdir
@@ -42,6 +60,6 @@ def hwClassifier():
     classifierResult = classify0(testData, trainingMat, hwLabels, 3)
     print("Result: %d" % classifierResult)
 
-
-출처  
-(https://codeapp.tistory.com/6?category=675169)
+```
+# 참고자료  
+https://codeapp.tistory.com/6?category=675169
