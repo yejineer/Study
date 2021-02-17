@@ -1,3 +1,29 @@
+[>> 문제 보러가기](https://www.hackerrank.com/challenges/ctci-bubble-sort/problem)  
+
+## 문제 설명
+Given an array of integers, sort the array in ascending order using the Bubble Sort algorithm above. Once sorted, print the following three lines:  
+  
+> Array is sorted in numSwaps swaps., where  is the number of swaps that took place.  
+> First Element: firstElement, where  is the first element in the sorted array.  
+> Last Element: lastElement, where  is the last element in the sorted array.  
+  
+Hint: To complete this challenge, you must add a variable that keeps a running tally of all swaps that occur during execution.
+
+   
+## Example
+### a [6, 4, 1]
+swap    a         
+0       [6,4,1]  
+1       [4,6,1]  
+2       [4,1,6]  
+3       [1,4,6]  
+The steps of the bubble sort are shown above. It took 3 swaps to sort the array. Output is:  
+  
+Array is sorted in 3 swaps.    
+First Element: 1  
+Last Element: 6  
+  
+## 소스 코드
 ```java
 package sort;
 
