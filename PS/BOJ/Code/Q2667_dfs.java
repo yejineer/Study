@@ -7,7 +7,7 @@ import java.io.InputStreamReader;
 import java.util.StringTokenizer;
 import java.util.*;
 
-public class Q2667 {
+public class Q2667_dfs {
     static int apartCount, n;
     static boolean[][] visit;
     static int[][] map;
@@ -26,13 +26,7 @@ public class Q2667 {
                 }
             }
         }
-
-        StringBuilder sb = new StringBuilder();
-        sb.append(apartList.size()).append('\n');
-        Collections.sort(apartList);
-        for (int n : apartList) {
-            sb.append(n).append('\n');
-        }
+        print();
     }
 
     private static void dfs(int x, int y) {
@@ -46,10 +40,19 @@ public class Q2667 {
                 dfs(dx, dy);
             }
         }
-
     }
 
-    public void main(String[] args) throws IOException {
+    private static void print() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(apartList.size()).append('\n');
+        Collections.sort(apartList);    // 역순일 경우, Collections.sort(apartList, Collections.reverseOrder());
+        for (int n : apartList) {
+            sb.append(n).append('\n');
+        }
+        System.out.print(sb);
+    }
+
+    public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = new StringTokenizer(br.readLine());
         n = Integer.valueOf(st.nextToken());
