@@ -33,14 +33,14 @@ public class Q1966 {
                 for (int j=0; j<que.size(); j++) {
                     if (que.get(j)[1] > page[1]) {
                         que.offer(page);
-                        for (int k=0; k<i; k++) {
+                        for (int k=0; k<j; k++) {
                             que.offer(que.poll());
                         }
                         maxValue = false;
                         break;
                     }
                 }
-                if (maxValue == true) continue;
+                if (maxValue == false) continue;
 
                 count++;
                 if (page[0] == M) {
