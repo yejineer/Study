@@ -39,7 +39,7 @@ public class Q15654 {
             for (int i = 0; i < M; i++) {
                 sb.append(selected[i] + " ");
             }
-            sb.append("\N");
+            sb.append("\n");
             return;
         }
         for (int i = 0; i < N; i++) {
